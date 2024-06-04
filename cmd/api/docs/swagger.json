@@ -1,0 +1,36 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "title": "Your API",
+      "version": "1.0.0"
+    },
+    "paths": {
+      "/users": {
+        "get": {
+          "summary": "Получить всех пользователей",
+          "description": "Получить информацию о пользователе по его ID",
+          "produces": ["application/json"],
+          "responses": {
+            "200": {
+              "description": "Успешный ответ",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Пользователь не найден"
+            }
+          }
+        }
+      }
+    }
+  }
+  
