@@ -1,8 +1,6 @@
 package main
 
 import (
-	"net/http"
-
 	"github.com/labstack/echo/v4"
 )
 
@@ -12,5 +10,15 @@ import (
 // @Success 200 {object} User
 // @Failure 404 {string} string
 func (app *application) showUsersHandler(c echo.Context) error {
-	return c.String(http.StatusOK, "HIIIII!")
+
+	err := app.writeJSON(c)
+	if err != nil {
+		return c.JSON(200, response{
+			Status: "error",
+			//			data:    nil,
+			Message: "problema in Oleg",
+		})
+	}
+
+	return nil
 }
