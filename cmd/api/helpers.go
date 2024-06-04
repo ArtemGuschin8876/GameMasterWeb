@@ -7,8 +7,15 @@ import (
 	"strconv"
 
 	"gamemasterweb.net/internal/data"
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 )
+
+func LoadEnv() {
+	if err := godotenv.Load(); err != nil {
+		log.Print("No .env file found")
+	}
+}
 
 func (app *application) readIDParam(c echo.Context) (int64, error) {
 
@@ -26,8 +33,17 @@ func (app *application) readIDParam(c echo.Context) (int64, error) {
 func (app *application) writeJSON(c echo.Context) error {
 
 	id, err := app.readIDParam(c)
+	log.Printf(
+		"err is %v", err,
+	)
+
 	if err != nil {
-		return c.String(http.StatusNotFound, "the requested resource could not be found")
+		return c.JSON(200, response{
+			Status: "error",
+			//data:    nil,
+			Message: "problema in Oleg",
+		})
+		//return c.String(http.StatusNotFound, "the requested resource could not be found")
 	}
 
 	user := data.Users{
