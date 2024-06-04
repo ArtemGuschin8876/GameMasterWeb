@@ -28,7 +28,7 @@ func (app *application) routes() *echo.Echo {
 	e.Static("/swagger/", pathSwagger.pathStaticSwagger)
 	e.File("/docs/api/swagger.json", pathSwagger.filePathSwagger)
 
-	e.GET("/users", app.showUsersHandler)
+	e.GET("/users/:id", app.showUsersHandler)
 
 	return e
 }
