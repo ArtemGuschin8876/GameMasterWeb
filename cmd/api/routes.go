@@ -30,6 +30,7 @@ func (app *application) routes() *echo.Echo {
 	e.File("/docs/api/swagger.json", pathSwagger.filePathSwagger)
 
 	e.GET("/users/:id", app.showUsersHandler)
-	
+	e.POST("/users", app.addUsersHandler)
+
 	return e
 }
