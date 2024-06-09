@@ -31,6 +31,7 @@ func (app *application) routes() *echo.Echo {
 
 	e.GET("/users/:id", app.showUsersHandler)
 	e.POST("/users", app.addUsersHandler)
+	e.PUT("/users/:id", app.updateUsersHandler)
 
 	return e
 }
