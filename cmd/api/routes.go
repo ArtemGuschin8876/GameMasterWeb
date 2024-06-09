@@ -12,9 +12,9 @@ type pathsSwagger struct {
 }
 
 type response struct {
-	Status  string
-	Data    interface{}
-	Message string
+	Status  string      `json:"status"`
+	Data    interface{} `json:"data,omitempty"`
+	Message string      `json:"message,omitempty"`
 }
 
 func (app *application) routes() *echo.Echo {
@@ -30,6 +30,9 @@ func (app *application) routes() *echo.Echo {
 	e.File("/docs/api/swagger.json", pathSwagger.filePathSwagger)
 
 	e.GET("/users/:id", app.showUsersHandler)
+	e.POST("/users", app.addUsersHandler)
+	e.PUT("/users/:id", app.updateUsersHandler)
+	e.DELETE("/users/:id", app.deleteUsersHandler)
 
 	return e
 }

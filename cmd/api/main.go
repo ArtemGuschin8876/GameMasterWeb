@@ -10,6 +10,7 @@ import (
 	"os"
 	"time"
 
+	"gamemasterweb.net/internal/data"
 	_ "github.com/lib/pq"
 )
 
@@ -21,8 +22,9 @@ type config struct {
 }
 
 type application struct {
-	logger *log.Logger
-	config config
+	logger  *log.Logger
+	config  config
+	storage data.Storage
 }
 
 func main() {
@@ -42,8 +44,9 @@ func main() {
 	logger.Printf("database connection pool established")
 
 	app := application{
-		config: cfg,
-		logger: logger,
+		config:  cfg,
+		logger:  logger,
+		storage: data.NewStorage(db),
 	}
 
 	srv := &http.Server{

@@ -1,6 +1,9 @@
 package main
 
 import (
+	"errors"
+
+	"gamemasterweb.net/internal/data"
 	"github.com/labstack/echo/v4"
 )
 
@@ -11,14 +14,21 @@ import (
 // @Failure 404 {string} string
 func (app *application) showUsersHandler(c echo.Context) error {
 
-	err := app.writeJSON(c)
+	id, err := app.readIDParam(c)
 	if err != nil {
-		return c.JSON(200, response{
-			Status: "error",
-			//			data:    nil,
-			Message: "problema in Oleg",
-		})
+		return jsendError(c, "Id retrieval error")
 	}
 
-	return nil
+	user, err := app.storage.Users.Get(id)
+	if err != nil {
+		switch {
+		case errors.Is(err, data.ErrRecordNotFound):
+			jsendError(c, "the requested resource could not be found")
+		default:
+			jsendError(c, "the server was unable to process your request")
+		}
+
+	}
+
+	return jsendSuccess(c, user)
 }
