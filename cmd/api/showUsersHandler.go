@@ -19,7 +19,7 @@ func (app *application) showUsersHandler(c echo.Context) error {
 		return jsendError(c, "Id retrieval error")
 	}
 
-	user, err := app.models.Users.Get(id)
+	user, err := app.storage.Users.Get(id)
 	if err != nil {
 		switch {
 		case errors.Is(err, data.ErrRecordNotFound):

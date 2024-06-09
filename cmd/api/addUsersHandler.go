@@ -14,7 +14,7 @@ func (app *application) addUsersHandler(c echo.Context) error {
 		return c.JSON(http.StatusOK, jsendError(c, "invalid request payload"))
 	}
 
-	err := app.models.Users.Add(&user)
+	err := app.storage.Users.Add(&user)
 	if err != nil {
 		return c.JSON(http.StatusOK, jsendError(c, "error adding user to db"))
 	}

@@ -22,9 +22,9 @@ type config struct {
 }
 
 type application struct {
-	logger *log.Logger
-	config config
-	models data.Models
+	logger  *log.Logger
+	config  config
+	storage data.Storage
 }
 
 func main() {
@@ -44,9 +44,9 @@ func main() {
 	logger.Printf("database connection pool established")
 
 	app := application{
-		config: cfg,
-		logger: logger,
-		models: data.NewModels(db),
+		config:  cfg,
+		logger:  logger,
+		storage: data.NewStorage(db),
 	}
 
 	srv := &http.Server{

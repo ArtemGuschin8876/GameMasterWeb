@@ -13,7 +13,7 @@ func (app *application) updateUsersHandler(c echo.Context) error {
 		jsendError(c, "the requested resource could not be found")
 	}
 
-	user, err := app.models.Users.Get(id)
+	user, err := app.storage.Users.Get(id)
 	if err != nil {
 		switch {
 		case errors.Is(err, data.ErrRecordNotFound):
@@ -44,7 +44,7 @@ func (app *application) updateUsersHandler(c echo.Context) error {
 	user.About = input.About
 	user.Image = input.Image
 
-	err = app.models.Users.Update(user)
+	err = app.storage.Users.Update(user)
 	if err != nil {
 		return jsendError(c, "error updating user")
 	}

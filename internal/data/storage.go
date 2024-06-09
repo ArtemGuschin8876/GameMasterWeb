@@ -9,14 +9,12 @@ var (
 	ErrRecordNotFound = errors.New("record not found")
 )
 
-type envelope map[string]interface{}
-
-type Models struct {
+type Storage struct {
 	Users UserModel
 }
 
-func NewModels(db *sql.DB) Models {
-	return Models{
+func NewStorage(db *sql.DB) Storage {
+	return Storage{
 		Users: UserModel{DB: db},
 	}
 }

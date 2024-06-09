@@ -16,7 +16,7 @@ func (app *application) deleteUsersHandler(c echo.Context) error {
 		return jsendError(c, "Id retrieval error")
 	}
 
-	err = app.models.Users.Delete(id)
+	err = app.storage.Users.Delete(id)
 	if err != nil {
 		switch {
 		case errors.Is(err, data.ErrRecordNotFound):
