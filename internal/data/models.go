@@ -9,6 +9,8 @@ var (
 	ErrRecordNotFound = errors.New("record not found")
 )
 
+type envelope map[string]interface{}
+
 type Models struct {
 	Users UserModel
 }

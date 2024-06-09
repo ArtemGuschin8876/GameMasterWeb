@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"net/http"
 
 	"gamemasterweb.net/internal/data"
 	"github.com/labstack/echo/v4"
@@ -11,16 +10,16 @@ import (
 func (app *application) updateUsersHandler(c echo.Context) error {
 	id, err := app.readIDParam(c)
 	if err != nil {
-		c.JSON(http.StatusNotFound, jsendError(c, "the requested resource could not be found"))
+		jsendError(c, "the requested resource could not be found")
 	}
 
 	user, err := app.models.Users.Get(id)
 	if err != nil {
 		switch {
 		case errors.Is(err, data.ErrRecordNotFound):
-			c.JSON(http.StatusNotFound, jsendError(c, "the requested resource could not be found"))
+			jsendError(c, "the requested resource could not be found")
 		default:
-			c.JSON(http.StatusInternalServerError, jsendError(c, "the server was unable to process your request"))
+			jsendError(c, "the server was unable to process your request")
 		}
 
 	}
@@ -35,7 +34,7 @@ func (app *application) updateUsersHandler(c echo.Context) error {
 	}
 
 	if err := c.Bind(&input); err != nil {
-		return c.JSON(http.StatusBadRequest, jsendError(c, "bad response to an enquiry"))
+		return jsendError(c, "bad response to an enquiry")
 	}
 
 	user.Name = input.Name
@@ -47,8 +46,8 @@ func (app *application) updateUsersHandler(c echo.Context) error {
 
 	err = app.models.Users.Update(user)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, jsendError(c, "error updating user"))
+		return jsendError(c, "error updating user")
 	}
 
-	return c.JSON(http.StatusOK, jsendSuccess(c, user))
+	return jsendSuccess(c, user)
 }

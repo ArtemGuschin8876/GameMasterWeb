@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"net/http"
 
 	"gamemasterweb.net/internal/data"
 	"github.com/labstack/echo/v4"
@@ -24,13 +23,12 @@ func (app *application) showUsersHandler(c echo.Context) error {
 	if err != nil {
 		switch {
 		case errors.Is(err, data.ErrRecordNotFound):
-			c.JSON(http.StatusNotFound, jsendError(c, "the requested resource could not be found"))
+			jsendError(c, "the requested resource could not be found")
 		default:
-			c.JSON(http.StatusInternalServerError, jsendError(c, "the server was unable to process your request"))
+			jsendError(c, "the server was unable to process your request")
 		}
 
 	}
 
-	return c.JSON(http.StatusOK, user)
-
+	return jsendSuccess(c, user)
 }
