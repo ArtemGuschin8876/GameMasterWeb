@@ -34,7 +34,7 @@ func (app *application) updateUsersHandler(c echo.Context) error {
 	}
 
 	if err := c.Bind(&input); err != nil {
-		return jsendError(c, "bad response to an enquiry")
+		return jsendError(c, "database error")
 	}
 
 	user.Name = input.Name
