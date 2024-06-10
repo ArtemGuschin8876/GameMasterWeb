@@ -8,15 +8,21 @@ import (
 )
 
 func (app *application) addUsersHandler(c echo.Context) error {
+
 	var user data.Users
 
 	if err := c.Bind(&user); err != nil {
 		return c.JSON(http.StatusOK, jsendError(c, "invalid request payload"))
 	}
 
+	if err := user.Validate(); err != nil {
+		return jsendValidationError(c, err)
+	}
+
 	err := app.storage.Users.Add(&user)
 	if err != nil {
-		return c.JSON(http.StatusOK, jsendError(c, "error adding user to db"))
+		return jsendError(c, "error adding user to db")
 	}
-	return c.JSON(http.StatusOK, jsendSuccess(c, user))
+
+	return jsendSuccess(c, user)
 }
