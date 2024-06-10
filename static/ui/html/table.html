@@ -54,6 +54,14 @@
                       <th scope="col" class="px-6 py-3 text-start">
                         <div class="flex items-center gap-x-2">
                           <span class="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-neutral-200">
+                          Nickname
+                        </span>
+                      </div>
+                    </th>
+
+                    <th scope="col" class="px-6 py-3 text-start">
+                      <div class="flex items-center gap-x-2">
+                        <span class="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-neutral-200">
                           City
                         </span>
                       </div>
@@ -62,7 +70,7 @@
                     <th scope="col" class="px-6 py-3 text-start">
                       <div class="flex items-center gap-x-2">
                         <span class="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-neutral-200">
-                          Status
+                          About
                         </span>
                       </div>
                     </th>
@@ -70,15 +78,7 @@
                     <th scope="col" class="px-6 py-3 text-start">
                       <div class="flex items-center gap-x-2">
                         <span class="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-neutral-200">
-                          Successful games
-                        </span>
-                      </div>
-                    </th>
-
-                    <th scope="col" class="px-6 py-3 text-start">
-                      <div class="flex items-center gap-x-2">
-                        <span class="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-neutral-200">
-                          Created
+                          Image
                         </span>
                       </div>
                     </th>
@@ -109,35 +109,29 @@
                     <td class="h-px w-72 whitespace-nowrap">
                       <div class="px-6 py-3">
                         <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200">
+                          {{.Nickname}}
+                        </span>
+                      </div>
+                    </td>
+                    <td class="h-px w-72 whitespace-nowrap">
+                      <div class="px-6 py-3">
+                        <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200">
                           {{.City}}
                         </span>
                       </div>
                     </td>
-                    <td class="size-px whitespace-nowrap">
+                    <td class="h-px w-72 whitespace-nowrap">
                       <div class="px-6 py-3">
-                        <span class="py-1 px-1.5 inline-flex items-center gap-x-1 text-xs font-medium bg-teal-100 text-teal-800 rounded-full dark:bg-teal-500/10 dark:text-teal-500">
-                          <svg class="size-2.5" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"></path>
-                          </svg>
-                          Active
+                        <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200">
+                          {{.About}}
                         </span>
                       </div>
                     </td>
-                    <td class="size-px whitespace-nowrap">
-                      <div class="px-6 py-3">
-                        <div class="flex items-center gap-x-3">
-                          <span class="text-xs text-gray-500 dark:text-neutral-500">1/5</span>
-                          <div class="flex w-full h-1.5 bg-gray-200 rounded-full overflow-hidden dark:bg-neutral-700">
-                            <div class="flex flex-col justify-center overflow-hidden bg-gray-800 dark:bg-neutral-200" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </td>
+                   
                     <td class="size-px whitespace-nowrap">
                       <div class="px-6 py-3">
                         <span class="text-sm text-gray-500 dark:text-neutral-500">
-                          2024-06-04T16:41:33Z
+                         {{.Image}}
                         </span>
                       </div>
                     </td>

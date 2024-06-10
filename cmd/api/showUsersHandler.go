@@ -2,7 +2,7 @@ package main
 
 import (
 	"errors"
-	"fmt"
+	"strings"
 	"text/template"
 
 	"gamemasterweb.net/internal/data"
@@ -15,9 +15,7 @@ import (
 // @Success 200 {object} User
 // @Failure 404 {string} string
 func (app *application) showUsersHandler(c echo.Context) error {
-	fmt.Println(c)
 	id, err := app.readIDParam(c)
-	fmt.Println("id", id)
 	if err != nil {
 		return jsendError(c, "Id retrieval error")
 	}
@@ -32,7 +30,11 @@ func (app *application) showUsersHandler(c echo.Context) error {
 		}
 	}
 
-	// data := &pagesData{Page: user}
+	acceptHeader := c.Request().Header.Get("Accept")
+
+	if strings.Contains(acceptHeader, "application/json") {
+		return jsendSuccess(c, user)
+	}
 
 	files := []string{
 		"./static/ui/html/table.html",
