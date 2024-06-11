@@ -14,7 +14,8 @@ import (
 // @Produce json
 // @Success 200 {object} User
 // @Failure 404 {string} string
-func (app *application) showUsersHandler(c echo.Context) error {
+func (app *application) showOneUserHandler(c echo.Context) error {
+
 	id, err := app.readIDParam(c)
 	if err != nil {
 		return jsendError(c, "Id retrieval error")
@@ -36,18 +37,9 @@ func (app *application) showUsersHandler(c echo.Context) error {
 		return jsendSuccess(c, user)
 	}
 
-	// files := []string{
-	// 	"./static/ui/html/table.html",
-	// }
-
-	// ts, err := template.ParseFiles(files...)
-	// if err != nil {
-	// 	return c.String(http.StatusBadRequest, "error in parse files")
-	// }
-
-	ts, ok := app.template["./static/ui/html/table.html"]
+	ts, ok := app.templates["table.html"]
 	if !ok {
-		return c.String(http.StatusBadRequest, "template doesnt exist in cache ")
+		return c.String(http.StatusBadRequest, "template doesn't exist in cache")
 	}
 
 	err = ts.Execute(c.Response().Writer, user)

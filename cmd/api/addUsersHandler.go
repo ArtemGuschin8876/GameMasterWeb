@@ -16,7 +16,7 @@ func (app *application) addUsersHandler(c echo.Context) error {
 	}
 
 	if err := user.Validate(); err != nil {
-		return jsendValidationError(c, err)
+		return jsendError(c, err.Error())
 	}
 
 	err := app.storage.Users.Add(&user)

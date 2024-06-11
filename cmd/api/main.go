@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"text/template"
 	"time"
 
@@ -23,10 +24,10 @@ type config struct {
 }
 
 type application struct {
-	logger   *log.Logger
-	config   config
-	storage  data.Storage
-	template map[string]*template.Template
+	logger    *log.Logger
+	config    config
+	storage   data.Storage
+	templates map[string]*template.Template
 }
 
 func main() {
@@ -51,10 +52,10 @@ func main() {
 	}
 
 	app := application{
-		config:   cfg,
-		logger:   logger,
-		storage:  data.NewStorage(db),
-		template: templateCache,
+		config:    cfg,
+		logger:    logger,
+		storage:   data.NewStorage(db),
+		templates: templateCache,
 	}
 
 	srv := &http.Server{
@@ -107,7 +108,7 @@ func newTemplateCache() (map[string]*template.Template, error) {
 			return nil, err
 		}
 
-		cache[page] = ts
+		cache[filepath.Base(page)] = ts
 	}
 	return cache, nil
 }

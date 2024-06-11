@@ -32,15 +32,6 @@ func jsendError(c echo.Context, message string) error {
 	return c.JSON(http.StatusOK, res)
 }
 
-func jsendValidationError(c echo.Context, err error) error {
-	res := response{
-		Status:  "error",
-		Message: err.Error(),
-	}
-	return c.JSON(http.StatusOK, res)
-
-}
-
 func (app *application) readIDParam(c echo.Context) (int64, error) {
 
 	IDParam := c.Param("id")
