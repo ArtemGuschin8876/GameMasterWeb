@@ -27,7 +27,7 @@ func (u Users) Validate() error {
 		validation.Field(&u.Nickname,
 			validation.Required,
 			validation.Length(2, 20),
-			validation.Match(regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$`))),
+		),
 
 		validation.Field(&u.Email,
 			validation.Required,
@@ -42,6 +42,6 @@ func (u Users) Validate() error {
 		validation.Field(&u.About,
 			validation.Required,
 			validation.Length(30, 200),
-			validation.Match(regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$`))),
+		),
 	)
 }

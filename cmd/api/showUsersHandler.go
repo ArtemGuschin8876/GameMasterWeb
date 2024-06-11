@@ -2,8 +2,8 @@ package main
 
 import (
 	"errors"
+	"net/http"
 	"strings"
-	"text/template"
 
 	"gamemasterweb.net/internal/data"
 	"github.com/labstack/echo/v4"
@@ -36,13 +36,18 @@ func (app *application) showUsersHandler(c echo.Context) error {
 		return jsendSuccess(c, user)
 	}
 
-	files := []string{
-		"./static/ui/html/table.html",
-	}
+	// files := []string{
+	// 	"./static/ui/html/table.html",
+	// }
 
-	ts, err := template.ParseFiles(files...)
-	if err != nil {
-		return jsendError(c, "error read template files")
+	// ts, err := template.ParseFiles(files...)
+	// if err != nil {
+	// 	return c.String(http.StatusBadRequest, "error in parse files")
+	// }
+
+	ts, ok := app.template["./static/ui/html/table.html"]
+	if !ok {
+		return c.String(http.StatusBadRequest, "template doesnt exist in cache ")
 	}
 
 	err = ts.Execute(c.Response().Writer, user)
