@@ -68,6 +68,45 @@ func (m UserModel) Get(id int64) (*Users, error) {
 	return &user, nil
 }
 
+func (m UserModel) GetAll() ([]Users, error) {
+
+	query := `
+	SELECT id, name, nickname, email, city, about, image
+	FROM users
+	`
+
+	rows, err := m.DB.Query(query)
+	if err != nil {
+		return nil, err
+	}
+
+	var users []Users
+
+	for rows.Next() {
+		var user Users
+
+		if err := rows.Scan(
+			&user.ID,
+			&user.Name,
+			&user.Nickname,
+			&user.Email,
+			&user.City,
+			&user.About,
+			&user.Image,
+		); err != nil {
+			return nil, err
+		}
+
+		users = append(users, user)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
+
 func (m UserModel) Update(user *Users) error {
 
 	query := `

@@ -31,7 +31,9 @@ func (app *application) routes() *echo.Echo {
 	e.Static("/swagger/", pathSwagger.pathStaticSwagger)
 	e.File("/docs/api/swagger.json", pathSwagger.filePathSwagger)
 
+	e.GET("/users", app.showAllUsersHandler)
 	e.GET("/users/:id", app.showOneUserHandler)
+
 	e.POST("/users", app.addUsersHandler)
 	e.PUT("/users/:id", app.updateUsersHandler)
 	e.DELETE("/users/:id", app.deleteUsersHandler)
@@ -42,6 +44,7 @@ func (app *application) routes() *echo.Echo {
 	}
 
 	return e
+
 }
 
 func checkRoutesPath(e *echo.Echo) error {
