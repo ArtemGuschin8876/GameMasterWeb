@@ -26,8 +26,6 @@ func (m UserModel) Add(user *Users) error {
 		return ErrDuplicateEmail
 	}
 
-	log.Println("2")
-
 	query := `
 		INSERT INTO users (name, nickname, email, city, about, image)
 		VALUES ($1, $2, $3, $4, $5, $6)
