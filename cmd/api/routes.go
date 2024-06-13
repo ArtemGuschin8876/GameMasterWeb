@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"net/http"
 	"os"
 
@@ -38,16 +37,13 @@ func (app *application) routes() *echo.Echo {
 	e.PUT("/users/:id", app.updateUsersHandler)
 	e.DELETE("/users/:id", app.deleteUsersHandler)
 
-	err := checkRoutesPath(e)
-	if err != nil {
-		log.Fatal("error path verification")
-	}
+	checkRoutesPath(e)
 
 	return e
 
 }
 
-func checkRoutesPath(e *echo.Echo) error {
+func checkRoutesPath(e *echo.Echo) {
 
 	e.HTTPErrorHandler = func(err error, c echo.Context) {
 		code := http.StatusInternalServerError
@@ -75,5 +71,4 @@ func checkRoutesPath(e *echo.Echo) error {
 		}
 	}
 
-	return nil
 }

@@ -10,11 +10,29 @@ type UserModel struct {
 	DB *sql.DB
 }
 
+var (
+	ErrDuplicateNickname = errors.New("nickname already exists")
+	ErrDuplicateEmail    = errors.New("email already exists")
+)
+
 func (m UserModel) Add(user *Users) error {
+
+	isUnique, err := m.isEmailUnique(user.Email)
+	if err != nil {
+		return err
+	}
+
+	if !isUnique {
+		return ErrDuplicateEmail
+	}
+
+	log.Println("2")
+
 	query := `
 		INSERT INTO users (name, nickname, email, city, about, image)
 		VALUES ($1, $2, $3, $4, $5, $6)
-		RETURNING id`
+		RETURNING id
+		`
 
 	args := []interface{}{
 		user.Name,
@@ -25,7 +43,7 @@ func (m UserModel) Add(user *Users) error {
 		user.Image,
 	}
 
-	err := m.DB.QueryRow(query, args...).Scan(&user.ID)
+	err = m.DB.QueryRow(query, args...).Scan(&user.ID)
 	if err != nil {
 		log.Println("Error executing query:", err)
 	}
@@ -153,4 +171,23 @@ func (m UserModel) Delete(id int64) error {
 	}
 
 	return nil
+}
+
+func (m UserModel) isEmailUnique(email string) (bool, error) {
+
+	var id int
+
+	query := `
+	SELECT id FROM users WHERE email = $1`
+
+	err := m.DB.QueryRow(query, email).Scan(&id)
+	if err == sql.ErrNoRows {
+		return true, nil
+	}
+
+	if err != nil {
+		return false, err
+	}
+
+	return false, nil
 }

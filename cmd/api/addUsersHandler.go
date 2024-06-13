@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 
 	"gamemasterweb.net/internal/data"
@@ -21,7 +22,8 @@ func (app *application) addUsersHandler(c echo.Context) error {
 
 	err := app.storage.Users.Add(&user)
 	if err != nil {
-		return jsendError(c, "error adding user to db")
+		log.Println(err)
+		return jsendError(c, err.Error())
 	}
 
 	return jsendSuccess(c, user)
