@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"log"
 	"net/http"
 	"strings"
 
@@ -42,13 +43,10 @@ func (app *application) showOneUserHandler(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "template doesn't exist in cache")
 	}
 
-	// data := map[string]interface{}{
-	// 	"IsList": false,
-	// 	"User":   user,
-	// }
-
 	err = ts.Execute(c.Response().Writer, user)
+
 	if err != nil {
+		log.Println(err)
 		return jsendError(c, "error execute template files")
 	}
 

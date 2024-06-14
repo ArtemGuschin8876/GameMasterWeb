@@ -41,7 +41,7 @@ func (u Users) Validate() error {
 
 		validation.Field(&u.About,
 			validation.Required,
-			validation.Length(30, 200),
+			validation.Length(10, 200),
 		),
 	)
 }
