@@ -25,11 +25,6 @@ func (app *application) showAllUsersHandler(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "template doesn't exist in cache")
 	}
 
-	// data := map[string]interface{}{
-	// 	"IsList": true,
-	// 	"User":   users,
-	// }
-
 	err = ts.Execute(c.Response().Writer, users)
 	if err != nil {
 		return jsendError(c, "error execute template files")
