@@ -21,7 +21,6 @@ func jsendSuccess(c echo.Context, data interface{}) error {
 		Status: "success",
 		Data:   data,
 	}
-
 	return c.JSON(http.StatusOK, res)
 }
 

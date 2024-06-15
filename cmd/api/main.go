@@ -8,6 +8,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
+	"text/template"
 	"time"
 
 	"gamemasterweb.net/internal/data"
@@ -22,9 +24,10 @@ type config struct {
 }
 
 type application struct {
-	logger  *log.Logger
-	config  config
-	storage data.Storage
+	logger    *log.Logger
+	config    config
+	storage   data.Storage
+	templates map[string]*template.Template
 }
 
 func main() {
@@ -43,10 +46,16 @@ func main() {
 	defer db.Close()
 	logger.Printf("database connection pool established")
 
+	templateCache, err := newTemplateCache()
+	if err != nil {
+		logger.Fatal(err)
+	}
+
 	app := application{
-		config:  cfg,
-		logger:  logger,
-		storage: data.NewStorage(db),
+		config:    cfg,
+		logger:    logger,
+		storage:   data.NewStorage(db),
+		templates: templateCache,
 	}
 
 	srv := &http.Server{
@@ -84,4 +93,23 @@ func openDB(cfg config) (*sql.DB, error) {
 	}
 
 	return db, nil
+}
+
+func newTemplateCache() (map[string]*template.Template, error) {
+	cache := map[string]*template.Template{}
+
+	pages := []string{
+		"./static/ui/html/table.html",
+		"./static/ui/html/tableAllUsers.html",
+	}
+
+	for _, page := range pages {
+		ts, err := template.ParseFiles(page)
+		if err != nil {
+			return nil, err
+		}
+
+		cache[filepath.Base(page)] = ts
+	}
+	return cache, nil
 }
