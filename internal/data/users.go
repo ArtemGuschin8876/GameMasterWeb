@@ -17,31 +17,34 @@ type Users struct {
 	Image    string `json:"image"`
 }
 
-func (u Users) ValidateUsers() error {
-	return validation.ValidateStruct(&u,
-		validation.Field(&u.Name,
-			validation.Required,
-			validation.Length(2, 20),
-			validation.Match(regexp.MustCompile("^[a-zA-Z]+$"))),
+var (
+	errTextRu = "Это поле является обязательным"
+)
 
-		validation.Field(&u.Nickname,
-			validation.Required,
-			validation.Length(2, 20),
+func (u Users) ValidateUsers() error {
+	return validation.Errors{
+		"Name": validation.Validate(u.Name,
+			validation.Required.Error(errTextRu),
+			validation.Length(2, 20).Error("Имя должно содержать от 5 до 20 символов"),
 		),
 
-		validation.Field(&u.Email,
-			validation.Required,
-			validation.Length(1, 100),
-			is.Email),
+		"Nickname": validation.Validate(u.Nickname,
+			validation.Required.Error(errTextRu),
+		),
 
-		validation.Field(&u.City,
+		"Email": validation.Validate(u.Email,
+			validation.Required.Error(errTextRu),
+			is.Email.Error("Должен быть действительный адрес электронной почты"),
+		),
+
+		"City": validation.Validate(u.City,
+			validation.Required.Error(errTextRu),
 			validation.Match(regexp.MustCompile("^[a-zA-Z]+$")),
-			validation.Length(1, 20),
-			validation.Required),
+		),
 
-		validation.Field(&u.About,
-			validation.Required,
+		"About": validation.Validate(u.About,
+			validation.Required.Error(errTextRu),
 			validation.Length(10, 200),
 		),
-	)
+	}.Filter()
 }

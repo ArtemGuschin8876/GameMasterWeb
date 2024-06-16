@@ -14,23 +14,38 @@
         <form action="/users/add" method="post">
             <div class="mb-4">
                 <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-                <input type="name" name="name" id="name" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                <input type="text" name="name" id="name" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" value="{{.User.Name}}">
+                {{if .FormErrors.name}}
+                <p class="text-red-500 text-xs italic">{{.FormErrors.name}}</p>
+                {{end}}
             </div>
             <div class="mb-4">
-                <label for="Nickname" class="block text-sm font-medium text-gray-700">Nickname</label>
-                <input type="Nickname" name="Nickname" id="Nickname" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                <label for="nickname" class="block text-sm font-medium text-gray-700">Nickname</label>
+                <input type="text" name="nickname" id="nickname" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" value="{{.User.Nickname}}">
+                {{if .FormErrors.nickname}}
+                <p class="text-red-500 text-xs italic">{{.FormErrors.nickname}}</p>
+                {{end}}
             </div>
             <div class="mb-4">
                 <label for="email" class="block text-sm font-medium text-gray-700">Email address</label>
-                <input type="email" name="email" id="email" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                <input type="email" name="email" id="email" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" value="{{.User.Email}}">
+                {{if .FormErrors.email}}
+                <p class="text-red-500 text-xs italic">{{.FormErrors.email}}</p>
+                {{end}}
             </div>
             <div class="mb-4">
                 <label for="city" class="block text-sm font-medium text-gray-700">City</label>
-                <textarea id="city" name="city" rows="3" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"></textarea>
+                <textarea id="city" name="city" rows="3" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">{{.User.City}}</textarea>
+                {{if .FormErrors.city}}
+                <p class="text-red-500 text-xs italic">{{.FormErrors.city}}</p>
+                {{end}}
             </div>
             <div class="mb-4">
                 <label for="about" class="block text-sm font-medium text-gray-700">About</label>
-                <textarea id="about" name="about" rows="3" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"></textarea>
+                <textarea id="about" name="about" rows="3" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">{{.User.About}}</textarea>
+                {{if .FormErrors.about}}
+                <p class="text-red-500 text-xs italic">{{.FormErrors.about}}</p>
+                {{end}}
             </div>
             <div class="space-y-2">
                 <label for="af-submit-app-upload-images" class="inline-block text-sm font-medium text-gray-800 mt-2.5 dark:text-neutral-200">
@@ -50,8 +65,8 @@
                     Maximum file size is 2 MB
                   </span>
                 </label>
-              </div>
-            <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            </div>
+            <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mt-4">
                 Save
             </button>
         </form>

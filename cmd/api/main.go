@@ -103,6 +103,7 @@ func newTemplateCache() (map[string]*template.Template, error) {
 		"./static/ui/html/tableAllUsers.html",
 		"./static/ui/html/addUser.html",
 		"./static/ui/html/successfullCreatedUser.html",
+		"./static/ui/html/404.html",
 	}
 
 	for _, page := range pages {

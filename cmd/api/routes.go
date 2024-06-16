@@ -39,13 +39,13 @@ func (app *application) routes() *echo.Echo {
 	e.PUT("/users/:id", app.updateUsersHandler)
 	e.DELETE("/users/:id", app.deleteUsersHandler)
 
-	checkRoutesPath(e)
+	app.checkRoutesPath(e)
 
 	return e
 
 }
 
-func checkRoutesPath(e *echo.Echo) {
+func (app *application) checkRoutesPath(e *echo.Echo) {
 
 	e.HTTPErrorHandler = func(err error, c echo.Context) {
 		code := http.StatusInternalServerError
@@ -59,11 +59,11 @@ func checkRoutesPath(e *echo.Echo) {
 		}
 
 		if code == http.StatusNotFound {
-			msg = "the requested resource could not be found"
-			c.JSON(http.StatusNotFound, response{
-				Status:  "fail",
-				Message: msg,
-			})
+			err := app.renderHTML(c, "404", nil)
+			if err != nil {
+				msg = "err rendering 404 page"
+				c.String(http.StatusNotFound, msg)
+			}
 
 		} else {
 			c.JSON(code, response{

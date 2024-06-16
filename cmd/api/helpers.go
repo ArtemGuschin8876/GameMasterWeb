@@ -46,7 +46,6 @@ func (app *application) readIDParam(c echo.Context) (int64, error) {
 }
 
 func (app *application) renderHTML(c echo.Context, fileName string, s any) error {
-
 	ts, ok := app.templates[fileName+".html"]
 	if !ok {
 		return c.String(http.StatusBadRequest, "template doesn't exist in cache")
