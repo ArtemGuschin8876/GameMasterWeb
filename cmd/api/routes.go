@@ -33,7 +33,9 @@ func (app *application) routes() *echo.Echo {
 	e.GET("/users", app.showAllUsersHandler)
 	e.GET("/users/:id", app.showOneUserHandler)
 
-	e.POST("/users", app.addUsersHandler)
+	e.POST("/users/add", app.addUsersHandler)
+	e.GET("/users/add", app.addUsersHandler)
+
 	e.PUT("/users/:id", app.updateUsersHandler)
 	e.DELETE("/users/:id", app.deleteUsersHandler)
 

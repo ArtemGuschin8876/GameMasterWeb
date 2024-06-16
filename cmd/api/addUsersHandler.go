@@ -10,13 +10,18 @@ import (
 
 func (app *application) addUsersHandler(c echo.Context) error {
 
+	if c.Request().Method == http.MethodGet {
+		app.renderHTML(c, "addUser", nil)
+		return nil
+	}
+
 	var user data.Users
 
 	if err := c.Bind(&user); err != nil {
 		return c.JSON(http.StatusOK, jsendError(c, "invalid request payload"))
 	}
 
-	if err := user.Validate(); err != nil {
+	if err := user.ValidateUsers(); err != nil {
 		return jsendError(c, err.Error())
 	}
 
@@ -26,5 +31,11 @@ func (app *application) addUsersHandler(c echo.Context) error {
 		return jsendError(c, err.Error())
 	}
 
-	return jsendSuccess(c, user)
+	err = app.renderHTML(c, "successfullCreatedUser", nil)
+	if err != nil {
+		log.Println("file rendering error")
+		return jsendError(c, "file rendering error")
+	}
+
+	return nil
 }

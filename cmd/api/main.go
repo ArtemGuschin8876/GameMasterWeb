@@ -101,6 +101,8 @@ func newTemplateCache() (map[string]*template.Template, error) {
 	pages := []string{
 		"./static/ui/html/table.html",
 		"./static/ui/html/tableAllUsers.html",
+		"./static/ui/html/addUser.html",
+		"./static/ui/html/successfullCreatedUser.html",
 	}
 
 	for _, page := range pages {

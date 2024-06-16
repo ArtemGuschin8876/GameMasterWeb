@@ -1,7 +1,7 @@
 package main
 
 import (
-	"net/http"
+	"log"
 	"strings"
 
 	"github.com/labstack/echo/v4"
@@ -20,14 +20,10 @@ func (app *application) showAllUsersHandler(c echo.Context) error {
 		return jsendSuccess(c, users)
 	}
 
-	ts, ok := app.templates["tableAllUsers.html"]
-	if !ok {
-		return c.String(http.StatusBadRequest, "template doesn't exist in cache")
-	}
-
-	err = ts.Execute(c.Response().Writer, users)
+	err = app.renderHTML(c, "tableAllUsers", users)
 	if err != nil {
-		return jsendError(c, "error execute template files")
+		log.Println("file rendering error")
+		return jsendError(c, "file rendering error")
 	}
 
 	return nil

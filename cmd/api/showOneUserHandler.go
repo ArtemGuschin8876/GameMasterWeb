@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"log"
-	"net/http"
 	"strings"
 
 	"gamemasterweb.net/internal/data"
@@ -38,16 +37,10 @@ func (app *application) showOneUserHandler(c echo.Context) error {
 		return jsendSuccess(c, user)
 	}
 
-	ts, ok := app.templates["table.html"]
-	if !ok {
-		return c.String(http.StatusBadRequest, "template doesn't exist in cache")
-	}
-
-	err = ts.Execute(c.Response().Writer, user)
-
+	err = app.renderHTML(c, "table", user)
 	if err != nil {
-		log.Println(err)
-		return jsendError(c, "error execute template files")
+		log.Println("file rendering error")
+		return jsendError(c, "file rendering error")
 	}
 
 	return nil

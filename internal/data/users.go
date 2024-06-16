@@ -9,15 +9,15 @@ import (
 
 type Users struct {
 	ID       int64  `json:"id"`
-	Name     string `json:"name"`
-	Nickname string `json:"nickname"`
-	Email    string `json:"email"`
-	City     string `json:"city"`
-	About    string `json:"about"`
+	Name     string `json:"name" form:"name"`
+	Nickname string `json:"nickname" form:"nickname"`
+	Email    string `json:"email" form:"email"`
+	City     string `json:"city" form:"city"`
+	About    string `json:"about" form:"about"`
 	Image    string `json:"image"`
 }
 
-func (u Users) Validate() error {
+func (u Users) ValidateUsers() error {
 	return validation.ValidateStruct(&u,
 		validation.Field(&u.Name,
 			validation.Required,
