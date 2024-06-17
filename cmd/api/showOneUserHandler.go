@@ -42,6 +42,5 @@ func (app *application) showOneUserHandler(c echo.Context) error {
 		log.Println("file rendering error")
 		return jsendError(c, "file rendering error")
 	}
-
 	return nil
 }

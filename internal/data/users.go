@@ -18,32 +18,32 @@ type Users struct {
 }
 
 var (
-	errTextRu = "Это поле является обязательным"
+	bindingErrRuLang = "Это поле является обязательным"
 )
 
 func (u Users) ValidateUsers() error {
 	return validation.Errors{
 		"Name": validation.Validate(u.Name,
-			validation.Required.Error(errTextRu),
+			validation.Required.Error(bindingErrRuLang),
 			validation.Length(2, 20).Error("Имя должно содержать от 5 до 20 символов"),
 		),
 
 		"Nickname": validation.Validate(u.Nickname,
-			validation.Required.Error(errTextRu),
+			validation.Required.Error(bindingErrRuLang),
 		),
 
 		"Email": validation.Validate(u.Email,
-			validation.Required.Error(errTextRu),
+			validation.Required.Error(bindingErrRuLang),
 			is.Email.Error("Должен быть действительный адрес электронной почты"),
 		),
 
 		"City": validation.Validate(u.City,
-			validation.Required.Error(errTextRu),
+			validation.Required.Error(bindingErrRuLang),
 			validation.Match(regexp.MustCompile("^[a-zA-Z]+$")),
 		),
 
 		"About": validation.Validate(u.About,
-			validation.Required.Error(errTextRu),
+			validation.Required.Error(bindingErrRuLang),
 			validation.Length(10, 200),
 		),
 	}.Filter()

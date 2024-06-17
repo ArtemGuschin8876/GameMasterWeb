@@ -16,14 +16,12 @@ type TemplateData struct {
 }
 
 func (app *application) addUsersHandler(c echo.Context) error {
+
 	var user data.Users
+
 	data := TemplateData{
 		FormErrors: make(map[string]string),
 		User:       user,
-	}
-
-	if c.Request().Method == http.MethodGet {
-		return app.renderHTML(c, "addUser", data)
 	}
 
 	if err := c.Bind(&user); err != nil {
@@ -56,11 +54,5 @@ func (app *application) addUsersHandler(c echo.Context) error {
 		return jsendError(c, err.Error())
 	}
 
-	err = app.renderHTML(c, "successfullCreatedUser", nil)
-	if err != nil {
-		log.Println("file rendering error")
-		return jsendError(c, "file rendering error")
-	}
-
-	return nil
+	return c.Redirect(http.StatusSeeOther, "/users/successfully")
 }
