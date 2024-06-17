@@ -12,37 +12,37 @@
         <h1 class="text-2xl font-bold mb-4">Registration</h1>
         
         <form action="/users" method="post">
-            <div class="mb-4">
-                <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-                <input type="text" name="name" id="name" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" value="{{if .User.Name}}{{.User.Name}}{{end}}">
+            <div class="space-y-2">
+                <label for="name" class="inline-block text-sm font-medium text-gray-800 mt-2.5 dark:text-neutral-200">Name</label>
+                <input type="text" name="name" id="name" class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" value="{{if .User.Name}}{{.User.Name}}{{end}}">
                 {{if .FormErrors.name}}
                 <p class="text-red-500 text-xs italic">{{.FormErrors.name}}</p>
                 {{end}}
             </div>
             <div class="mb-4">
                 <label for="nickname" class="block text-sm font-medium text-gray-700">Nickname</label>
-                <input type="text" name="nickname" id="nickname" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" value="{{if .User.Nickname}}{{.User.Nickname}}{{end}}">
+                <input type="text" name="nickname" id="nickname" class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm text-sm rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" value="{{if .User.Nickname}}{{.User.Nickname}}{{end}}">
                 {{if .FormErrors.nickname}}
                 <p class="text-red-500 text-xs italic">{{.FormErrors.nickname}}</p>
                 {{end}}
             </div>
             <div class="mb-4">
                 <label for="email" class="block text-sm font-medium text-gray-700">Email address</label>
-                <input type="email" name="email" id="email" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" value="{{if .User.Email}}{{.User.Email}}{{end}}">
+                <input type="email" name="email" id="email" class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm text-sm rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" value="{{if .User.Email}}{{.User.Email}}{{end}}">
                 {{if .FormErrors.email}}
                 <p class="text-red-500 text-xs italic">{{.FormErrors.email}}</p>
                 {{end}}
             </div>
             <div class="mb-4">
                 <label for="city" class="block text-sm font-medium text-gray-700">City</label>
-                <textarea id="city" name="city" rows="3" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">{{if .User.City}}{{.User.City}}{{end}}</textarea>
+                <input id="city" name="city" rows="3" class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm text-sm rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">{{if .User.City}}{{.User.City}}{{end}}</textarea>
                 {{if .FormErrors.city}}
                 <p class="text-red-500 text-xs italic">{{.FormErrors.city}}</p>
                 {{end}}
             </div>
             <div class="mb-4">
                 <label for="about" class="block text-sm font-medium text-gray-700">About</label>
-                <textarea id="about" name="about" rows="3" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">{{if .User.About}}{{.User.About}}{{end}}</textarea>
+                <textarea id="about" name="about" rows="3" class="py-2 px-3 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">{{if .User.About}}{{.User.About}}{{end}}</textarea>
                 {{if .FormErrors.about}}
                 <p class="text-red-500 text-xs italic">{{.FormErrors.about}}</p>
                 {{end}}
