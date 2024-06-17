@@ -6,6 +6,7 @@ import (
 
 	"gamemasterweb.net/internal/data"
 	validation "github.com/go-ozzo/ozzo-validation"
+	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 )
 
@@ -13,6 +14,8 @@ type TemplateData struct {
 	Errors     []string
 	FormErrors map[string]string
 	User       data.Users
+	Flash      string
+	Users      []data.Users
 }
 
 func (app *application) addUsersHandler(c echo.Context) error {
@@ -54,5 +57,16 @@ func (app *application) addUsersHandler(c echo.Context) error {
 		return jsendError(c, err.Error())
 	}
 
-	return c.Redirect(http.StatusSeeOther, "/users/successfully")
+	sess, err := session.Get("session", c)
+	if err != nil {
+		log.Println("session creation error")
+		return jsendError(c, "session creation error")
+	}
+
+	sess.Values["flash"] = "User" + user.Nickname + " successfully created!"
+	if err := sess.Save(c.Request(), c.Response()); err != nil {
+		return err
+	}
+
+	return c.Redirect(http.StatusSeeOther, "/users")
 }

@@ -9,7 +9,15 @@ require (
 	github.com/swaggo/swag v1.16.3
 )
 
-require github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
+require (
+	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
+	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
+	github.com/gorilla/context v1.1.2 // indirect
+	github.com/gorilla/securecookie v1.1.2 // indirect
+	github.com/gorilla/sessions v1.2.2 // indirect
+	github.com/labstack/echo-contrib v0.17.1 // indirect
+	golang.org/x/time v0.5.0 // indirect
+)
 
 require (
 	github.com/KyleBanks/depth v1.2.1 // indirect

@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gorilla/sessions"
+	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 )
 
@@ -27,12 +29,18 @@ func (app *application) routes() *echo.Echo {
 		pathStaticSwagger: os.Getenv("STATIC_SWAGGER"),
 	}
 
+	secretKeySession := os.Getenv("SECRET_KEY_FOR_SESSION")
+	if secretKeySession == "" {
+		e.Logger.Fatal("SECRET_KEY environment variable is required")
+	}
+
 	e.Static("/swagger/", pathSwagger.pathStaticSwagger)
 	e.File("/docs/api/swagger.json", pathSwagger.filePathSwagger)
 
+	e.Use(session.Middleware(sessions.NewCookieStore([]byte(secretKeySession))))
+
 	e.GET("/users", app.showAllUsersHandler)
 	e.GET("/users/:id", app.showOneUserHandler)
-	e.GET("/users/successfully", app.successfullCreatedUserHandler)
 	e.GET("/users/new", app.showUserForm)
 
 	e.POST("/users", app.addUsersHandler)
