@@ -22,6 +22,7 @@ type response struct {
 
 func (app *application) routes() *echo.Echo {
 	e := echo.New()
+	e.Use(app.recoverPanic)
 
 	LoadEnv()
 	pathSwagger := pathsSwagger{
@@ -31,7 +32,7 @@ func (app *application) routes() *echo.Echo {
 
 	secretKeySession := os.Getenv("SECRET_KEY_FOR_SESSION")
 	if secretKeySession == "" {
-		e.Logger.Fatal("SECRET_KEY environment variable is required")
+		e.Logger.Fatal("SECRET_KEY_FOR_SESSION environment variable is required")
 	}
 
 	e.Static("/swagger/", pathSwagger.pathStaticSwagger)

@@ -87,7 +87,7 @@ func (app *application) updateUsersHandler(c echo.Context) error {
 	sess, err := session.Get("session", c)
 	if err != nil {
 		log.Println("session creation error")
-		return jsendError(c, "session creation error")
+		panic("session creation error")
 	}
 
 	sess.Values["flash"] = user.Nickname + " successfully updated!"
