@@ -23,16 +23,22 @@ func (app *application) addUsersHandler(c echo.Context) error {
 
 	var user data.Users
 
-	tmplData := TemplateData{
-		FormErrors: make(map[string]string),
-		User:       user,
-	}
+	// tmplData := TemplateData{
+	// 	FormErrors: make(map[string]string),
+	// 	User:       user,
+	// }
 
 	if err := c.Bind(&user); err != nil {
 		return c.JSON(http.StatusOK, jsendError(c, "invalid request payload"))
 	}
 
 	if err := user.ValidateUsers(); err != nil {
+
+		tmplData := TemplateData{
+			FormErrors: make(map[string]string),
+			User:       user,
+		}
+
 		if val, ok := err.(validation.Errors); ok {
 			for field, valerr := range val {
 				switch field {
