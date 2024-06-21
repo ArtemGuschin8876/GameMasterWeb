@@ -15,7 +15,7 @@ func RecoverPanic(next echo.HandlerFunc) echo.HandlerFunc {
 				errResponse := map[string]interface{}{
 					"error": "Internal Server Error",
 				}
-				c.JSON(http.StatusInternalServerError, errResponse)
+				c.JSON(http.StatusOK, errResponse)
 			}
 
 		}()

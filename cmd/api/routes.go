@@ -37,6 +37,10 @@ func routes(app *app.Application) *echo.Echo {
 
 	e.Use(session.Middleware(sessions.NewCookieStore([]byte(secretKeySession))))
 
+	e.GET("/", func(c echo.Context) error {
+		return c.Redirect(http.StatusSeeOther, "/users")
+	})
+
 	e.GET("/users", func(c echo.Context) error {
 		return api_handlers.ShowAllUsersHandler(c, app)
 	})

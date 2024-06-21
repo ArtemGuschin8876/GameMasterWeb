@@ -12,12 +12,12 @@ import (
 )
 
 type TemplateData struct {
-	Errors     []string
-	FormErrors map[string]string
-	User       data.Users
-	Flash      string
-	Users      []data.Users
-	U          *data.Users
+	Errors      []string
+	FormErrors  map[string]string
+	User        data.Users
+	Flash       string
+	Users       []data.Users
+	UserPointer *data.Users
 }
 
 func AddUsersHandler(c echo.Context, app *app.Application) error {

@@ -26,8 +26,8 @@ func EditUserFormHandler(c echo.Context, app *app.Application) error {
 	}
 
 	tmplData := TemplateData{
-		U:          user,
-		FormErrors: make(map[string]string),
+		UserPointer: user,
+		FormErrors:  make(map[string]string),
 	}
 
 	return app.RenderHTML(c, "updateUserForms", tmplData)

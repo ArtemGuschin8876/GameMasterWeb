@@ -14,11 +14,6 @@ import (
 
 func UpdateUsersHandler(c echo.Context, app *app.Application) error {
 
-	method := c.FormValue("_method")
-	if method != "" && method != "PUT" {
-		return app.JsendError(c, "invalid method")
-	}
-
 	id, err := app.ReadIDParam(c)
 	if err != nil {
 		app.JsendError(c, "the requested resource could not be found")
@@ -56,8 +51,8 @@ func UpdateUsersHandler(c echo.Context, app *app.Application) error {
 	user.Image = input.Image
 
 	tmplData := TemplateData{
-		U:          user,
-		FormErrors: make(map[string]string),
+		UserPointer: user,
+		FormErrors:  make(map[string]string),
 	}
 
 	if err := user.ValidateUsers(); err != nil {
