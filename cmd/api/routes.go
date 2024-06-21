@@ -42,10 +42,11 @@ func (app *application) routes() *echo.Echo {
 	e.GET("/users", app.showAllUsersHandler)
 	e.GET("/users/:id", app.showOneUserHandler)
 	e.GET("/users/new", app.showUserForm)
+	e.GET("/users/edit/:id", app.editUserFormHandler)
 
 	e.POST("/users", app.addUsersHandler)
 
-	e.PUT("/users/:id", app.updateUsersHandler)
+	e.POST("/users/edit/:id", app.updateUsersHandler)
 	e.DELETE("/users/:id", app.deleteUsersHandler)
 
 	app.checkRoutesPath(e)

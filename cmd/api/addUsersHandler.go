@@ -16,13 +16,14 @@ type TemplateData struct {
 	User       data.Users
 	Flash      string
 	Users      []data.Users
+	U          *data.Users
 }
 
 func (app *application) addUsersHandler(c echo.Context) error {
 
 	var user data.Users
 
-	data := TemplateData{
+	tmplData := TemplateData{
 		FormErrors: make(map[string]string),
 		User:       user,
 	}
@@ -36,19 +37,19 @@ func (app *application) addUsersHandler(c echo.Context) error {
 			for field, valerr := range val {
 				switch field {
 				case "Name":
-					data.FormErrors["name"] = valerr.Error()
+					tmplData.FormErrors["name"] = valerr.Error()
 				case "Nickname":
-					data.FormErrors["nickname"] = valerr.Error()
+					tmplData.FormErrors["nickname"] = valerr.Error()
 				case "Email":
-					data.FormErrors["email"] = valerr.Error()
+					tmplData.FormErrors["email"] = valerr.Error()
 				case "City":
-					data.FormErrors["city"] = valerr.Error()
+					tmplData.FormErrors["city"] = valerr.Error()
 				case "About":
-					data.FormErrors["about"] = valerr.Error()
+					tmplData.FormErrors["about"] = valerr.Error()
 				}
 			}
 		}
-		return app.renderHTML(c, "addUser", data)
+		return app.renderHTML(c, "addUser", tmplData)
 	}
 
 	err := app.storage.Users.Add(&user)

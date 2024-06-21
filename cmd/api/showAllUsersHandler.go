@@ -4,6 +4,7 @@ import (
 	"log"
 	"strings"
 
+	"gamemasterweb.net/internal/data"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 )
@@ -36,7 +37,7 @@ func (app *application) showAllUsersHandler(c echo.Context) error {
 		return jsendSuccess(c, users)
 	}
 
-	data := TemplateData{
+	data := data.TemplateData{
 		Users: users,
 		Flash: flashMessage,
 	}
