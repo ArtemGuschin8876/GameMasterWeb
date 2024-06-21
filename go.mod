@@ -27,6 +27,7 @@ require (
 	github.com/go-openapi/swag v0.23.0 // indirect
 	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
 	github.com/josharian/intern v1.0.0 // indirect
+	github.com/labstack/echo v3.3.10+incompatible
 	github.com/labstack/gommon v0.4.2 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect

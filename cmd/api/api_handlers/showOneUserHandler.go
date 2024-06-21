@@ -1,10 +1,11 @@
-package main
+package api_handlers
 
 import (
 	"errors"
 	"log"
 	"strings"
 
+	"gamemasterweb.net/internal/app"
 	"gamemasterweb.net/internal/data"
 	"github.com/labstack/echo/v4"
 )
@@ -14,33 +15,32 @@ import (
 // @Produce json
 // @Success 200 {object} User
 // @Failure 404 {string} string
-func (app *application) showOneUserHandler(c echo.Context) error {
-
-	id, err := app.readIDParam(c)
+func ShowOneUserHandler(c echo.Context, app *app.Application) error {
+	id, err := app.ReadIDParam(c)
 	if err != nil {
-		return jsendError(c, "Id retrieval error")
+		return app.JsendError(c, "Id retrieval error")
 	}
 
-	user, err := app.storage.Users.Get(id)
+	user, err := app.Storage.Users.Get(id)
 	if err != nil {
 		switch {
 		case errors.Is(err, data.ErrRecordNotFound):
-			return jsendError(c, "the requested resource could not be found")
+			return app.JsendError(c, "the requested resource could not be found")
 		default:
-			return jsendError(c, "the server was unable to process your request")
+			return app.JsendError(c, "the server was unable to process your request")
 		}
 	}
 
 	acceptHeader := c.Request().Header.Get("Accept")
 
 	if strings.Contains(acceptHeader, "application/json") {
-		return jsendSuccess(c, user)
+		return app.JsendSuccess(c, user)
 	}
 
-	err = app.renderHTML(c, "table", user)
+	err = app.RenderHTML(c, "table", user)
 	if err != nil {
 		log.Println("file rendering error")
-		return jsendError(c, "file rendering error")
+		return app.JsendError(c, "file rendering error")
 	}
 	return nil
 }

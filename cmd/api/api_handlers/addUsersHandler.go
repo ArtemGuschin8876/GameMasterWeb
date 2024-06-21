@@ -1,9 +1,10 @@
-package main
+package api_handlers
 
 import (
 	"log"
 	"net/http"
 
+	"gamemasterweb.net/internal/app"
 	"gamemasterweb.net/internal/data"
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/labstack/echo-contrib/session"
@@ -19,17 +20,11 @@ type TemplateData struct {
 	U          *data.Users
 }
 
-func (app *application) addUsersHandler(c echo.Context) error {
-
+func AddUsersHandler(c echo.Context, app *app.Application) error {
 	var user data.Users
 
-	// tmplData := TemplateData{
-	// 	FormErrors: make(map[string]string),
-	// 	User:       user,
-	// }
-
 	if err := c.Bind(&user); err != nil {
-		return c.JSON(http.StatusOK, jsendError(c, "invalid request payload"))
+		return c.JSON(http.StatusOK, app.JsendError(c, "invalid request payload"))
 	}
 
 	if err := user.ValidateUsers(); err != nil {
@@ -55,19 +50,19 @@ func (app *application) addUsersHandler(c echo.Context) error {
 				}
 			}
 		}
-		return app.renderHTML(c, "addUser", tmplData)
+		return app.RenderHTML(c, "addUser", tmplData)
 	}
 
-	err := app.storage.Users.Add(&user)
+	err := app.Storage.Users.Add(&user)
 	if err != nil {
 		log.Println(err)
-		return jsendError(c, err.Error())
+		return app.JsendError(c, err.Error())
 	}
 
 	sess, err := session.Get("session", c)
 	if err != nil {
 		log.Println("session creation error")
-		return jsendError(c, "session creation error")
+		return app.JsendError(c, "session creation error")
 	}
 
 	sess.Values["flash"] = "User" + user.Nickname + " successfully created!"

@@ -1,35 +1,36 @@
-package main
+package api_handlers
 
 import (
 	"errors"
 	"log"
 	"net/http"
 
+	"gamemasterweb.net/internal/app"
 	"gamemasterweb.net/internal/data"
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 )
 
-func (app *application) updateUsersHandler(c echo.Context) error {
+func UpdateUsersHandler(c echo.Context, app *app.Application) error {
 
 	method := c.FormValue("_method")
 	if method != "" && method != "PUT" {
-		return jsendError(c, "invalid method")
+		return app.JsendError(c, "invalid method")
 	}
 
-	id, err := app.readIDParam(c)
+	id, err := app.ReadIDParam(c)
 	if err != nil {
-		jsendError(c, "the requested resource could not be found")
+		app.JsendError(c, "the requested resource could not be found")
 	}
 
-	user, err := app.storage.Users.Get(id)
+	user, err := app.Storage.Users.Get(id)
 	if err != nil {
 		switch {
 		case errors.Is(err, data.ErrRecordNotFound):
-			jsendError(c, "the requested resource could not be found")
+			app.JsendError(c, "the requested resource could not be found")
 		default:
-			jsendError(c, "the server was unable to process your request")
+			app.JsendError(c, "the server was unable to process your request")
 		}
 
 	}
@@ -44,7 +45,7 @@ func (app *application) updateUsersHandler(c echo.Context) error {
 	}
 
 	if err := c.Bind(&input); err != nil {
-		return jsendError(c, "database error")
+		return app.JsendError(c, "database error")
 	}
 
 	user.Name = input.Name
@@ -76,12 +77,12 @@ func (app *application) updateUsersHandler(c echo.Context) error {
 				}
 			}
 		}
-		return app.renderHTML(c, "updateUserForms", tmplData)
+		return app.RenderHTML(c, "updateUserForms", tmplData)
 	}
 
-	err = app.storage.Users.Update(user)
+	err = app.Storage.Users.Update(user)
 	if err != nil {
-		return jsendError(c, "error updating user")
+		return app.JsendError(c, "error updating user")
 	}
 
 	sess, err := session.Get("session", c)

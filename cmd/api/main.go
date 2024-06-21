@@ -5,35 +5,22 @@ import (
 	"database/sql"
 	"flag"
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
-	"text/template"
 	"time"
 
+	"gamemasterweb.net/internal/app"
 	"gamemasterweb.net/internal/data"
 	_ "github.com/lib/pq"
 )
 
-type config struct {
-	port int
-	db   struct {
-		dsn string
-	}
-}
-
-type application struct {
-	logger    *log.Logger
-	config    config
-	storage   data.Storage
-	templates map[string]*template.Template
-}
-
 func main() {
-	var cfg config
+	var cfg app.Config
 
-	flag.IntVar(&cfg.port, "port", 4000, "API Server PORT")
+	flag.IntVar(&cfg.Port, "port", 4000, "API Server PORT")
 	flag.Parse()
 
 	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
@@ -51,16 +38,17 @@ func main() {
 		logger.Fatal(err)
 	}
 
-	app := application{
-		config:    cfg,
-		logger:    logger,
-		storage:   data.NewStorage(db),
-		templates: templateCache,
+	app := app.Application{
+		Config:    cfg,
+		Logger:    logger,
+		Storage:   data.NewStorage(db),
+		Templates: templateCache,
+		Response:  app.Response{},
 	}
 
 	srv := &http.Server{
-		Addr:         fmt.Sprintf(":%d", cfg.port),
-		Handler:      app.routes(),
+		Addr:         fmt.Sprintf(":%d", cfg.Port),
+		Handler:      routes(&app),
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 30 * time.Second,
@@ -74,12 +62,12 @@ func main() {
 	}
 }
 
-func openDB(cfg config) (*sql.DB, error) {
+func openDB(cfg app.Config) (*sql.DB, error) {
 
-	LoadEnv()
-	cfg.db.dsn = os.Getenv("DSN_DB")
+	app.LoadEnv()
+	cfg.DB.DSN = os.Getenv("DSN_DB")
 
-	db, err := sql.Open("postgres", cfg.db.dsn)
+	db, err := sql.Open("postgres", cfg.DB.DSN)
 	if err != nil {
 		return nil, err
 	}

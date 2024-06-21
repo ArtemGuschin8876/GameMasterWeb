@@ -7,7 +7,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func (app *application) recoverPanic(next echo.HandlerFunc) echo.HandlerFunc {
+func RecoverPanic(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		defer func() {
 			if err := recover(); err != nil {

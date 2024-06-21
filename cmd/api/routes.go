@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"os"
 
+	"gamemasterweb.net/cmd/api/api_handlers"
+	"gamemasterweb.net/internal/app"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
@@ -14,17 +16,12 @@ type pathsSwagger struct {
 	pathStaticSwagger string
 }
 
-type response struct {
-	Status  string      `json:"status"`
-	Data    interface{} `json:"data,omitempty"`
-	Message string      `json:"message,omitempty"`
-}
+func routes(app *app.Application) *echo.Echo {
 
-func (app *application) routes() *echo.Echo {
 	e := echo.New()
-	e.Use(app.recoverPanic)
 
-	LoadEnv()
+	e.Use(RecoverPanic)
+
 	pathSwagger := pathsSwagger{
 		filePathSwagger:   os.Getenv("SWAGGER_FILE"),
 		pathStaticSwagger: os.Getenv("STATIC_SWAGGER"),
@@ -40,23 +37,41 @@ func (app *application) routes() *echo.Echo {
 
 	e.Use(session.Middleware(sessions.NewCookieStore([]byte(secretKeySession))))
 
-	e.GET("/users", app.showAllUsersHandler)
-	e.GET("/users/:id", app.showOneUserHandler)
-	e.GET("/users/new", app.showUserForm)
-	e.GET("/users/edit/:id", app.editUserFormHandler)
+	e.GET("/users", func(c echo.Context) error {
+		return api_handlers.ShowAllUsersHandler(c, app)
+	})
 
-	e.POST("/users", app.addUsersHandler)
+	e.GET("/users/:id", func(c echo.Context) error {
+		return api_handlers.ShowOneUserHandler(c, app)
+	})
 
-	e.POST("/users/edit/:id", app.updateUsersHandler)
-	e.DELETE("/users/:id", app.deleteUsersHandler)
+	e.GET("/users/new", func(c echo.Context) error {
+		return api_handlers.AddUsersHandler(c, app)
+	})
 
-	app.checkRoutesPath(e)
+	e.GET("/users/edit/:id", func(c echo.Context) error {
+		return api_handlers.EditUserFormHandler(c, app)
+	})
+
+	e.POST("/users", func(c echo.Context) error {
+		return api_handlers.AddUsersHandler(c, app)
+	})
+
+	e.POST("/users/edit/:id", func(c echo.Context) error {
+		return api_handlers.UpdateUsersHandler(c, app)
+	})
+
+	e.DELETE("/users/:id", func(c echo.Context) error {
+		return api_handlers.DeleteUsersHandler(c, app)
+	})
+
+	checkRoutesPath(e, app)
 
 	return e
 
 }
 
-func (app *application) checkRoutesPath(e *echo.Echo) {
+func checkRoutesPath(e *echo.Echo, app *app.Application) {
 
 	e.HTTPErrorHandler = func(err error, c echo.Context) {
 		code := http.StatusInternalServerError
@@ -70,18 +85,17 @@ func (app *application) checkRoutesPath(e *echo.Echo) {
 		}
 
 		if code == http.StatusNotFound {
-			err := app.renderHTML(c, "404", nil)
+			err := app.RenderHTML(c, "404", nil)
 			if err != nil {
 				msg = "err rendering 404 page"
 				c.String(http.StatusNotFound, msg)
 			}
 
 		} else {
-			c.JSON(code, response{
-				Status:  "error",
-				Message: msg,
-			})
+			res := app.Response
+			res.Status = "error"
+			res.Message = msg
+			c.JSON(code, res)
 		}
 	}
-
 }
