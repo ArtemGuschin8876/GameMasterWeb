@@ -15,7 +15,7 @@ var (
 	ErrDuplicateEmail    = errors.New("email already exists")
 )
 
-func (m UserModel) Add(user *Users) error {
+func (m UserModel) Add(user *User) error {
 
 	isUnique, err := m.isEmailUnique(user.Email)
 	if err != nil {
@@ -49,7 +49,7 @@ func (m UserModel) Add(user *Users) error {
 	return err
 }
 
-func (m UserModel) Get(id int64) (*Users, error) {
+func (m UserModel) Get(id int64) (*User, error) {
 
 	if id < 1 {
 		return nil, ErrRecordNotFound
@@ -60,7 +60,7 @@ func (m UserModel) Get(id int64) (*Users, error) {
 	FROM users
 	WHERE id = $1`
 
-	var user Users
+	var user User
 
 	err := m.DB.QueryRow(query, id).Scan(
 		&user.ID,
@@ -80,11 +80,10 @@ func (m UserModel) Get(id int64) (*Users, error) {
 			return nil, err
 		}
 	}
-
 	return &user, nil
 }
 
-func (m UserModel) GetAll() ([]Users, error) {
+func (m UserModel) GetAll() ([]User, error) {
 
 	query := `
 	SELECT id, name, nickname, email, city, about, image
@@ -96,10 +95,10 @@ func (m UserModel) GetAll() ([]Users, error) {
 		return nil, err
 	}
 
-	var users []Users
+	var users []User
 
 	for rows.Next() {
-		var user Users
+		var user User
 
 		if err := rows.Scan(
 			&user.ID,
@@ -123,7 +122,7 @@ func (m UserModel) GetAll() ([]Users, error) {
 	return users, nil
 }
 
-func (m UserModel) Update(user *Users) error {
+func (m UserModel) Update(user *User) error {
 
 	query := `
 	UPDATE users

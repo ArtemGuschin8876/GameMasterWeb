@@ -4,7 +4,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type CustomContext struct {
+type AppContext struct {
 	echo.Context
 	App *Application
 }

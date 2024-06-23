@@ -12,7 +12,7 @@ type envelope map[string]interface{}
 
 func DeleteUser(c echo.Context) error {
 
-	cc := c.(*application.CustomContext)
+	cc := c.(*application.AppContext)
 	app := cc.App
 
 	id, err := app.ReadIDParam(c)

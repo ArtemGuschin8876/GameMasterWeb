@@ -17,7 +17,7 @@ import (
 // @Failure 404 {string} string
 func ShowUser(c echo.Context) error {
 
-	cc := c.(*application.CustomContext)
+	cc := c.(*application.AppContext)
 	app := cc.App
 
 	id, err := app.ReadIDParam(c)

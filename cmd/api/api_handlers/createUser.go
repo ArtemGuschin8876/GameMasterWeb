@@ -12,28 +12,28 @@ import (
 )
 
 type TemplateData struct {
-	Errors      []string
-	FormErrors  map[string]string
-	User        data.Users
-	Flash       string
-	Users       []data.Users
-	UserPointer *data.Users
+	Errors     []string
+	FormErrors map[string]string
+	User       *data.User
+	Flash      string
+	Users      []data.User
 }
 
-func AddUsersHandler(c echo.Context) error {
-	var user data.Users
+func CreateUser(c echo.Context) error {
+	var user data.User
 
-	cc := c.(*application.CustomContext)
+	cc := c.(*application.AppContext)
 	app := cc.App
 
 	if err := c.Bind(&user); err != nil {
+		log.Println(err)
 		return c.JSON(http.StatusOK, app.JsendError(c, "invalid request payload"))
 	}
 
-	if err := user.ValidateUsers(); err != nil {
+	if err := user.ValidateUser(); err != nil {
 		tmplData := TemplateData{
 			FormErrors: make(map[string]string),
-			User:       user,
+			User:       &user,
 		}
 
 		if val, ok := err.(validation.Errors); ok {

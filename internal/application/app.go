@@ -34,14 +34,16 @@ type Application struct {
 }
 
 func (app *Application) ReadIDParam(c echo.Context) (int64, error) {
-	IDParam := c.Param("id")
 
+	IDParam := c.Param("id")
+	if IDParam == "" {
+		return 0, errors.New("missing id parameter")
+	}
 	id, err := strconv.ParseInt(IDParam, 10, 64)
 	if err != nil || id < 1 {
 		log.Println(id)
 		return 0, errors.New("invalid id parameter")
 	}
-
 	return id, nil
 }
 

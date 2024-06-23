@@ -12,7 +12,7 @@ import (
 
 func ShowListUsers(c echo.Context) error {
 
-	cc := c.(*application.CustomContext)
+	cc := c.(*application.AppContext)
 	app := cc.App
 
 	sess, err := session.Get("session", c)

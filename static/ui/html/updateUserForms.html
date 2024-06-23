@@ -11,46 +11,46 @@
     <div class="container mx-auto p-4">
         <h1 class="text-2xl font-bold mb-4">Edit User</h1>
         
-        <form action="/users/edit/{{.UserPointer.ID}}" method="post">
+        <form action="/users/{{.User.ID}}" method="post">
             <input type="hidden" name="_method" value="PUT">
             <div class="space-y-2">
                 <label for="name" class="inline-block text-sm font-medium text-gray-800 mt-2.5 dark:text-neutral-200">Name</label>
-                <input type="text" name="name" id="name" class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" value="{{.UserPointer.Name}}">
+                <input type="text" name="name" id="name" class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" value="{{.User.Name}}">
                 {{if .FormErrors.name}}
                     <p class="text-red-500 text-xs italic">{{.FormErrors.name}}</p>
                 {{end}}
             </div>
             <div class="mb-4">
                 <label for="nickname" class="block text-sm font-medium text-gray-700">Nickname</label>
-                <input type="text" name="nickname" id="nickname" class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm text-sm rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" value="{{.UserPointer.Nickname}}">
+                <input type="text" name="nickname" id="nickname" class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm text-sm rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" value="{{.User.Nickname}}">
                 {{if .FormErrors.nickname}}
                     <p class="text-red-500 text-xs italic">{{.FormErrors.nickname}}</p>
                 {{end}}
             </div>
             <div class="mb-4">
                 <label for="email" class="block text-sm font-medium text-gray-700">Email address</label>
-                <input type="email" name="email" id="email" class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm text-sm rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" value="{{.UserPointer.Email}}">
+                <input type="email" name="email" id="email" class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm text-sm rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" value="{{.User.Email}}">
                 {{if .FormErrors.email}}
                     <p class="text-red-500 text-xs italic">{{.FormErrors.email}}</p>
                 {{end}}
             </div>
             <div class="mb-4">
                 <label for="city" class="block text-sm font-medium text-gray-700">City</label>
-                <input type="text" id="city" name="city" class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm text-sm rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" value="{{.UserPointer.City}}">
+                <input type="text" id="city" name="city" class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm text-sm rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" value="{{.User.City}}">
                 {{if .FormErrors.city}}
                     <p class="text-red-500 text-xs italic">{{.FormErrors.city}}</p>
                 {{end}}
             </div>
             <div class="mb-4">
                 <label for="about" class="block text-sm font-medium text-gray-700">About</label>
-                <textarea id="about" name="about" rows="3" class="py-2 px-3 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">{{.UserPointer.About}}</textarea>
+                <textarea id="about" name="about" rows="3" class="py-2 px-3 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">{{.User.About}}</textarea>
                 {{if .FormErrors.about}}
                     <p class="text-red-500 text-xs italic">{{.FormErrors.about}}</p>
                 {{end}}
             </div>
             <div class="mb-4">
                 <label for="image" class="block text-sm font-medium text-gray-700">Image</label>
-                <input type="text" name="image" id="image" class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm text-sm rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" value="{{.UserPointer.Image}}">
+                <input type="text" name="image" id="image" class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm text-sm rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" value="{{.User.Image}}">
                 {{if .FormErrors.image}}
                     <p class="text-red-500 text-xs italic">{{.FormErrors.image}}</p>
                 {{end}}

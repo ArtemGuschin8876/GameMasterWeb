@@ -27,9 +27,9 @@ func routes(app *application.Application) *echo.Echo {
 		pathStaticSwagger: os.Getenv("STATIC_SWAGGER"),
 	}
 
-	secretKeySession := os.Getenv("SECRET_KEY_FOR_SESSION")
+	secretKeySession := os.Getenv("SECRET_KEY")
 	if secretKeySession == "" {
-		e.Logger.Fatal("SECRET_KEY_FOR_SESSION environment variable is required")
+		e.Logger.Fatal("SECRET_KEY environment variable is required")
 	}
 
 	e.Static("/swagger/", pathSwagger.pathStaticSwagger)
@@ -39,7 +39,7 @@ func routes(app *application.Application) *echo.Echo {
 
 	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			cc := &application.CustomContext{Context: c, App: app}
+			cc := &application.AppContext{Context: c, App: app}
 			return next(cc)
 		}
 	})
@@ -53,7 +53,7 @@ func routes(app *application.Application) *echo.Echo {
 	e.GET("/users/new", api_handlers.NewUserForm)
 	e.GET("/users/edit/:id", api_handlers.EditUserForm)
 
-	e.POST("/users", api_handlers.AddUsersHandler)
+	e.POST("/users", api_handlers.CreateUser)
 	e.POST("/users/:id", api_handlers.UpdateUser)
 
 	e.DELETE("/users/:id", api_handlers.DeleteUser)

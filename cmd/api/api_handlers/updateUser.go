@@ -14,7 +14,11 @@ import (
 
 func UpdateUser(c echo.Context) error {
 
-	cc := c.(*application.CustomContext)
+	cc, ok := c.(*application.AppContext)
+	if !ok {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to cast context"})
+	}
+
 	app := cc.App
 
 	id, err := app.ReadIDParam(c)
@@ -24,6 +28,7 @@ func UpdateUser(c echo.Context) error {
 
 	user, err := app.Storage.Users.Get(id)
 	if err != nil {
+		log.Println(err)
 		switch {
 		case errors.Is(err, data.ErrRecordNotFound):
 			app.JsendError(c, "the requested resource could not be found")
@@ -54,11 +59,11 @@ func UpdateUser(c echo.Context) error {
 	user.Image = input.Image
 
 	tmplData := TemplateData{
-		UserPointer: user,
-		FormErrors:  make(map[string]string),
+		User:       user,
+		FormErrors: make(map[string]string),
 	}
 
-	if err := user.ValidateUsers(); err != nil {
+	if err := user.ValidateUser(); err != nil {
 		if val, ok := err.(validation.Errors); ok {
 			for field, valerr := range val {
 				switch field {

@@ -10,7 +10,7 @@ import (
 
 func EditUserForm(c echo.Context) error {
 
-	cc := c.(*application.CustomContext)
+	cc := c.(*application.AppContext)
 	app := cc.App
 
 	id, err := app.ReadIDParam(c)
@@ -29,8 +29,8 @@ func EditUserForm(c echo.Context) error {
 	}
 
 	tmplData := TemplateData{
-		UserPointer: user,
-		FormErrors:  make(map[string]string),
+		User:       user,
+		FormErrors: make(map[string]string),
 	}
 
 	return app.RenderHTML(c, "updateUserForms", tmplData)

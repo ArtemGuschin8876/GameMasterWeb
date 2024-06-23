@@ -6,7 +6,7 @@ import (
 )
 
 func NewUserForm(c echo.Context) error {
-	cc := c.(*application.CustomContext)
+	cc := c.(*application.AppContext)
 	app := cc.App
 
 	return app.RenderHTML(c, "addUser", nil)

@@ -7,7 +7,7 @@ import (
 	"github.com/go-ozzo/ozzo-validation/is"
 )
 
-type Users struct {
+type User struct {
 	ID       int64  `json:"id"`
 	Name     string `json:"name" form:"name"`
 	Nickname string `json:"nickname" form:"nickname"`
@@ -21,7 +21,7 @@ var (
 	mandatoryFieldRuLang = "Это поле является обязательным"
 )
 
-func (u Users) ValidateUsers() error {
+func (u User) ValidateUser() error {
 	return validation.Errors{
 		"Name": validation.Validate(u.Name,
 			validation.Required.Error(mandatoryFieldRuLang),
