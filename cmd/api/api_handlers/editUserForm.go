@@ -3,12 +3,15 @@ package api_handlers
 import (
 	"errors"
 
-	"gamemasterweb.net/internal/app"
+	"gamemasterweb.net/internal/application"
 	"gamemasterweb.net/internal/data"
 	"github.com/labstack/echo/v4"
 )
 
-func EditUserFormHandler(c echo.Context, app *app.Application) error {
+func EditUserForm(c echo.Context) error {
+
+	cc := c.(*application.CustomContext)
+	app := cc.App
 
 	id, err := app.ReadIDParam(c)
 	if err != nil {

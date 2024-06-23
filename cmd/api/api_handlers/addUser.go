@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"gamemasterweb.net/internal/app"
+	"gamemasterweb.net/internal/application"
 	"gamemasterweb.net/internal/data"
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/labstack/echo-contrib/session"
@@ -20,15 +20,17 @@ type TemplateData struct {
 	UserPointer *data.Users
 }
 
-func AddUsersHandler(c echo.Context, app *app.Application) error {
+func AddUsersHandler(c echo.Context) error {
 	var user data.Users
+
+	cc := c.(*application.CustomContext)
+	app := cc.App
 
 	if err := c.Bind(&user); err != nil {
 		return c.JSON(http.StatusOK, app.JsendError(c, "invalid request payload"))
 	}
 
 	if err := user.ValidateUsers(); err != nil {
-
 		tmplData := TemplateData{
 			FormErrors: make(map[string]string),
 			User:       user,

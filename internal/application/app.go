@@ -1,4 +1,4 @@
-package app
+package application
 
 import (
 	"errors"
@@ -48,11 +48,13 @@ func (app *Application) ReadIDParam(c echo.Context) (int64, error) {
 func (app *Application) RenderHTML(c echo.Context, fileName string, s any) error {
 	ts, ok := app.Templates[fileName+".html"]
 	if !ok {
+		app.Logger.Println("template doesn't exist in cache:", fileName)
 		return c.String(http.StatusBadRequest, "template doesn't exist in cache")
 	}
 
 	err := ts.Execute(c.Response().Writer, s)
 	if err != nil {
+		app.Logger.Printf("error executing template %s: %v", fileName, err)
 		return app.JsendError(c, "error execute template files")
 	}
 

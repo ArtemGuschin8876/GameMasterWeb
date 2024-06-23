@@ -12,13 +12,13 @@ import (
 	"path/filepath"
 	"time"
 
-	"gamemasterweb.net/internal/app"
+	"gamemasterweb.net/internal/application"
 	"gamemasterweb.net/internal/data"
 	_ "github.com/lib/pq"
 )
 
 func main() {
-	var cfg app.Config
+	var cfg application.Config
 
 	flag.IntVar(&cfg.Port, "port", 4000, "API Server PORT")
 	flag.Parse()
@@ -38,12 +38,12 @@ func main() {
 		logger.Fatal(err)
 	}
 
-	app := app.Application{
+	app := application.Application{
 		Config:    cfg,
 		Logger:    logger,
 		Storage:   data.NewStorage(db),
 		Templates: templateCache,
-		Response:  app.Response{},
+		Response:  application.Response{},
 	}
 
 	srv := &http.Server{
@@ -62,9 +62,9 @@ func main() {
 	}
 }
 
-func openDB(cfg app.Config) (*sql.DB, error) {
+func openDB(cfg application.Config) (*sql.DB, error) {
 
-	app.LoadEnv()
+	application.LoadEnv()
 	cfg.DB.DSN = os.Getenv("DSN_DB")
 
 	db, err := sql.Open("postgres", cfg.DB.DSN)

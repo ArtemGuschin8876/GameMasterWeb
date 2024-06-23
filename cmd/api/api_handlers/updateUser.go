@@ -5,14 +5,17 @@ import (
 	"log"
 	"net/http"
 
-	"gamemasterweb.net/internal/app"
+	"gamemasterweb.net/internal/application"
 	"gamemasterweb.net/internal/data"
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 )
 
-func UpdateUsersHandler(c echo.Context, app *app.Application) error {
+func UpdateUser(c echo.Context) error {
+
+	cc := c.(*application.CustomContext)
+	app := cc.App
 
 	id, err := app.ReadIDParam(c)
 	if err != nil {

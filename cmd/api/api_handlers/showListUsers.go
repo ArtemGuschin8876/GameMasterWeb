@@ -4,13 +4,16 @@ import (
 	"log"
 	"strings"
 
-	"gamemasterweb.net/internal/app"
+	"gamemasterweb.net/internal/application"
 	"gamemasterweb.net/internal/data"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 )
 
-func ShowAllUsersHandler(c echo.Context, app *app.Application) error {
+func ShowListUsers(c echo.Context) error {
+
+	cc := c.(*application.CustomContext)
+	app := cc.App
 
 	sess, err := session.Get("session", c)
 	if err != nil {

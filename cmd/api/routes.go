@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"gamemasterweb.net/cmd/api/api_handlers"
-	"gamemasterweb.net/internal/app"
+	"gamemasterweb.net/internal/application"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
@@ -16,7 +16,7 @@ type pathsSwagger struct {
 	pathStaticSwagger string
 }
 
-func routes(app *app.Application) *echo.Echo {
+func routes(app *application.Application) *echo.Echo {
 
 	e := echo.New()
 
@@ -37,37 +37,26 @@ func routes(app *app.Application) *echo.Echo {
 
 	e.Use(session.Middleware(sessions.NewCookieStore([]byte(secretKeySession))))
 
+	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			cc := &application.CustomContext{Context: c, App: app}
+			return next(cc)
+		}
+	})
+
 	e.GET("/", func(c echo.Context) error {
 		return c.Redirect(http.StatusSeeOther, "/users")
 	})
 
-	e.GET("/users", func(c echo.Context) error {
-		return api_handlers.ShowAllUsersHandler(c, app)
-	})
+	e.GET("/users", api_handlers.ShowListUsers)
+	e.GET("/users/:id", api_handlers.ShowUser)
+	e.GET("/users/new", api_handlers.NewUserForm)
+	e.GET("/users/edit/:id", api_handlers.EditUserForm)
 
-	e.GET("/users/:id", func(c echo.Context) error {
-		return api_handlers.ShowOneUserHandler(c, app)
-	})
+	e.POST("/users", api_handlers.AddUsersHandler)
+	e.POST("/users/:id", api_handlers.UpdateUser)
 
-	e.GET("/users/new", func(c echo.Context) error {
-		return api_handlers.AddUsersHandler(c, app)
-	})
-
-	e.GET("/users/edit/:id", func(c echo.Context) error {
-		return api_handlers.EditUserFormHandler(c, app)
-	})
-
-	e.POST("/users", func(c echo.Context) error {
-		return api_handlers.AddUsersHandler(c, app)
-	})
-
-	e.POST("/users/edit/:id", func(c echo.Context) error {
-		return api_handlers.UpdateUsersHandler(c, app)
-	})
-
-	e.DELETE("/users/:id", func(c echo.Context) error {
-		return api_handlers.DeleteUsersHandler(c, app)
-	})
+	e.DELETE("/users/:id", api_handlers.DeleteUser)
 
 	checkRoutesPath(e, app)
 
@@ -75,7 +64,7 @@ func routes(app *app.Application) *echo.Echo {
 
 }
 
-func checkRoutesPath(e *echo.Echo, app *app.Application) {
+func checkRoutesPath(e *echo.Echo, app *application.Application) {
 
 	e.HTTPErrorHandler = func(err error, c echo.Context) {
 		code := http.StatusInternalServerError

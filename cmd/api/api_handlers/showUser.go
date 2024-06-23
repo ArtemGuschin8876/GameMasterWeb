@@ -5,7 +5,7 @@ import (
 	"log"
 	"strings"
 
-	"gamemasterweb.net/internal/app"
+	"gamemasterweb.net/internal/application"
 	"gamemasterweb.net/internal/data"
 	"github.com/labstack/echo/v4"
 )
@@ -15,7 +15,11 @@ import (
 // @Produce json
 // @Success 200 {object} User
 // @Failure 404 {string} string
-func ShowOneUserHandler(c echo.Context, app *app.Application) error {
+func ShowUser(c echo.Context) error {
+
+	cc := c.(*application.CustomContext)
+	app := cc.App
+
 	id, err := app.ReadIDParam(c)
 	if err != nil {
 		return app.JsendError(c, "Id retrieval error")
