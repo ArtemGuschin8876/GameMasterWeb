@@ -25,7 +25,7 @@ func ShowUser(c echo.Context) error {
 		return app.JsendError(c, "Id retrieval error")
 	}
 
-	user, err := app.Storage.Users.Get(id)
+	user, err := app.Storage.User.Get(id)
 	if err != nil {
 		switch {
 		case errors.Is(err, data.ErrRecordNotFound):

@@ -1,8 +1,6 @@
 package data
 
 import (
-	"regexp"
-
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/go-ozzo/ozzo-validation/is"
 )
@@ -22,6 +20,7 @@ var (
 )
 
 func (u User) ValidateUser() error {
+
 	return validation.Errors{
 		"Name": validation.Validate(u.Name,
 			validation.Required.Error(mandatoryFieldRuLang),
@@ -39,7 +38,6 @@ func (u User) ValidateUser() error {
 
 		"City": validation.Validate(u.City,
 			validation.Required.Error(mandatoryFieldRuLang),
-			validation.Match(regexp.MustCompile("^[a-zA-Z]+$")),
 		),
 
 		"About": validation.Validate(u.About,

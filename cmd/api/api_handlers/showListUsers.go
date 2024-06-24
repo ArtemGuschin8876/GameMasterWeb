@@ -30,7 +30,7 @@ func ShowListUsers(c echo.Context) error {
 		flashMessage, _ = flash.(string)
 	}
 
-	users, err := app.Storage.Users.GetAll()
+	users, err := app.Storage.User.GetAll()
 	if err != nil {
 		return app.JsendError(c, "error getting the list of users")
 	}

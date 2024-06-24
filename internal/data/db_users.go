@@ -17,13 +17,24 @@ var (
 
 func (m UserModel) Add(user *User) error {
 
-	isUnique, err := m.isEmailUnique(user.Email)
+	isUniqueEmail, err := m.isEmailUnique(user.Email)
 	if err != nil {
+		log.Println("error verifying a unique email")
 		return err
 	}
 
-	if !isUnique {
+	if !isUniqueEmail {
 		return ErrDuplicateEmail
+	}
+
+	isUniqueNickName, err := m.isNickNameUnique(user.Nickname)
+	if err != nil {
+		log.Println("error verifying a unique nickname")
+		return err
+	}
+
+	if !isUniqueNickName {
+		return ErrDuplicateNickname
 	}
 
 	query := `
@@ -171,20 +182,29 @@ func (m UserModel) Delete(id int64) error {
 }
 
 func (m UserModel) isEmailUnique(email string) (bool, error) {
-
-	var id int
+	var exists bool
 
 	query := `
-	SELECT id FROM users WHERE email = $1`
+	SELECT EXISTS(SELECT 1 FROM users WHERE email=$1)`
 
-	err := m.DB.QueryRow(query, email).Scan(&id)
-	if err == sql.ErrNoRows {
-		return true, nil
-	}
-
-	if err != nil {
+	err := m.DB.QueryRow(query, email).Scan(&exists)
+	if err != nil && err != sql.ErrNoRows {
 		return false, err
 	}
 
-	return false, nil
+	return !exists, nil
+}
+
+func (m UserModel) isNickNameUnique(nickname string) (bool, error) {
+	var exists bool
+
+	query := `
+	SELECT EXISTS(SELECT 1 FROM users WHERE nickname=$1)`
+
+	err := m.DB.QueryRow(query, nickname).Scan(&exists)
+	if err != nil && err != sql.ErrNoRows {
+		return false, err
+	}
+
+	return !exists, nil
 }

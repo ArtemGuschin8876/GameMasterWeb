@@ -20,7 +20,7 @@ func DeleteUser(c echo.Context) error {
 		return app.JsendError(c, "Id retrieval error")
 	}
 
-	err = app.Storage.Users.Delete(id)
+	err = app.Storage.User.Delete(id)
 	if err != nil {
 		switch {
 		case errors.Is(err, data.ErrRecordNotFound):

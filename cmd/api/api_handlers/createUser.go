@@ -1,6 +1,7 @@
 package api_handlers
 
 import (
+	"errors"
 	"log"
 	"net/http"
 
@@ -31,6 +32,7 @@ func CreateUser(c echo.Context) error {
 	}
 
 	if err := user.ValidateUser(); err != nil {
+
 		tmplData := TemplateData{
 			FormErrors: make(map[string]string),
 			User:       &user,
@@ -55,10 +57,26 @@ func CreateUser(c echo.Context) error {
 		return app.RenderHTML(c, "addUser", tmplData)
 	}
 
-	err := app.Storage.Users.Add(&user)
+	err := app.Storage.User.Add(&user)
 	if err != nil {
 		log.Println(err)
-		return app.JsendError(c, err.Error())
+		if errors.Is(err, data.ErrDuplicateEmail) {
+			tmplData := TemplateData{
+				FormErrors: map[string]string{"email": "Пользователь с таким email уже существует"},
+				User:       &user,
+			}
+			return app.RenderHTML(c, "addUser", tmplData)
+		}
+
+		if errors.Is(err, data.ErrDuplicateNickname) {
+			tmplData := TemplateData{
+				FormErrors: map[string]string{"nickname": "Пользователь с таким nickname уже существует"},
+				User:       &user,
+			}
+			return app.RenderHTML(c, "addUser", tmplData)
+
+		}
+		log.Println(err)
 	}
 
 	sess, err := session.Get("session", c)

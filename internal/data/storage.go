@@ -10,11 +10,11 @@ var (
 )
 
 type Storage struct {
-	Users UserModel
+	User UserModel
 }
 
 func NewStorage(db *sql.DB) Storage {
 	return Storage{
-		Users: UserModel{DB: db},
+		User: UserModel{DB: db},
 	}
 }

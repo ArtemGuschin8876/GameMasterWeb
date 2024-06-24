@@ -26,7 +26,7 @@ func UpdateUser(c echo.Context) error {
 		app.JsendError(c, "the requested resource could not be found")
 	}
 
-	user, err := app.Storage.Users.Get(id)
+	user, err := app.Storage.User.Get(id)
 	if err != nil {
 		log.Println(err)
 		switch {
@@ -83,7 +83,7 @@ func UpdateUser(c echo.Context) error {
 		return app.RenderHTML(c, "updateUserForms", tmplData)
 	}
 
-	err = app.Storage.Users.Update(user)
+	err = app.Storage.User.Update(user)
 	if err != nil {
 		return app.JsendError(c, "error updating user")
 	}

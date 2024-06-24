@@ -39,6 +39,7 @@ func (app *Application) ReadIDParam(c echo.Context) (int64, error) {
 	if IDParam == "" {
 		return 0, errors.New("missing id parameter")
 	}
+
 	id, err := strconv.ParseInt(IDParam, 10, 64)
 	if err != nil || id < 1 {
 		log.Println(id)
