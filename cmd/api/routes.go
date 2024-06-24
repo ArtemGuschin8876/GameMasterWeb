@@ -48,7 +48,7 @@ func routes(app *application.Application) *echo.Echo {
 		return c.Redirect(http.StatusSeeOther, "/users")
 	})
 
-	e.GET("/users", api_handlers.ShowListUsers)
+	e.GET("/users", api_handlers.ListUsers)
 	e.GET("/users/:id", api_handlers.ShowUser)
 	e.GET("/users/new", api_handlers.NewUserForm)
 	e.GET("/users/edit/:id", api_handlers.EditUserForm)

@@ -10,7 +10,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func ShowListUsers(c echo.Context) error {
+func ListUsers(c echo.Context) error {
 
 	cc := c.(*application.AppContext)
 	app := cc.App
