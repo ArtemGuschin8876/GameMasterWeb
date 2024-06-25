@@ -7,7 +7,6 @@ import (
 
 	"gamemasterweb.net/internal/application"
 	"gamemasterweb.net/internal/data"
-	"github.com/labstack/echo/v4"
 )
 
 // @Summary Получить всех пользователей
@@ -15,10 +14,10 @@ import (
 // @Produce json
 // @Success 200 {object} User
 // @Failure 404 {string} string
-func ShowUser(c echo.Context) error {
+func ShowUser(a application.AppContext) error {
 
-	cc := c.(*application.AppContext)
-	app := cc.App
+	app := a.App
+	c := a.Context
 
 	id, err := app.ReadIDParam(c)
 	if err != nil {

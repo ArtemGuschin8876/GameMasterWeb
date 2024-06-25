@@ -48,15 +48,15 @@ func routes(app *application.Application) *echo.Echo {
 		return c.Redirect(http.StatusSeeOther, "/users")
 	})
 
-	e.GET("/users", api_handlers.ListUsers)
-	e.GET("/users/:id", api_handlers.ShowUser)
-	e.GET("/users/new", api_handlers.NewUserForm)
-	e.GET("/users/edit/:id", api_handlers.EditUserForm)
+	e.GET("/users", withAppContext(api_handlers.ListUsers))
+	e.GET("/users/:id", withAppContext(api_handlers.ShowUser))
+	e.GET("/users/new", withAppContext(api_handlers.NewUserForm))
+	e.GET("/users/edit/:id", withAppContext(api_handlers.EditUserForm))
 
-	e.POST("/users", api_handlers.CreateUser)
-	e.POST("/users/:id", api_handlers.UpdateUser)
+	e.POST("/users", withAppContext(api_handlers.CreateUser))
+	e.POST("/users/:id", withAppContext(api_handlers.UpdateUser))
 
-	e.DELETE("/users/:id", api_handlers.DeleteUser)
+	e.DELETE("/users/:id", withAppContext(api_handlers.DeleteUser))
 
 	checkRoutesPath(e, app)
 
@@ -90,5 +90,12 @@ func checkRoutesPath(e *echo.Echo, app *application.Application) {
 			res.Message = msg
 			c.JSON(code, res)
 		}
+	}
+}
+
+func withAppContext(handler func(application.AppContext) error) func(echo.Context) error {
+	return func(c echo.Context) error {
+		appCtx := application.AppContext{Context: c}
+		return handler(appCtx)
 	}
 }

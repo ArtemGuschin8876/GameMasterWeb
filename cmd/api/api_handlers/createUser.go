@@ -9,14 +9,13 @@ import (
 	"gamemasterweb.net/internal/data"
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/labstack/echo-contrib/session"
-	"github.com/labstack/echo/v4"
 )
 
-func CreateUser(c echo.Context) error {
+func CreateUser(a application.AppContext) error {
 	var user data.User
 
-	cc := c.(*application.AppContext)
-	app := cc.App
+	app := a.App
+	c := a.Context
 
 	if err := c.Bind(&user); err != nil {
 		log.Println(err)

@@ -7,13 +7,11 @@ import (
 	"gamemasterweb.net/internal/application"
 	"gamemasterweb.net/internal/data"
 	"github.com/labstack/echo-contrib/session"
-	"github.com/labstack/echo/v4"
 )
 
-func ListUsers(c echo.Context) error {
-
-	cc := c.(*application.AppContext)
-	app := cc.App
+func ListUsers(a application.AppContext) error {
+	app := a.App
+	c := a.Context
 
 	sess, err := session.Get("session", c)
 	if err != nil {

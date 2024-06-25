@@ -5,13 +5,12 @@ import (
 
 	"gamemasterweb.net/internal/application"
 	"gamemasterweb.net/internal/data"
-	"github.com/labstack/echo/v4"
 )
 
-func EditUserForm(c echo.Context) error {
+func EditUserForm(a application.AppContext) error {
 
-	cc := c.(*application.AppContext)
-	app := cc.App
+	app := a.App
+	c := a.Context
 
 	id, err := app.ReadIDParam(c)
 	if err != nil {

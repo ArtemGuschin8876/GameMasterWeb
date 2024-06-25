@@ -2,12 +2,11 @@ package api_handlers
 
 import (
 	"gamemasterweb.net/internal/application"
-	"github.com/labstack/echo/v4"
 )
 
-func NewUserForm(c echo.Context) error {
-	cc := c.(*application.AppContext)
-	app := cc.App
+func NewUserForm(a application.AppContext) error {
+	app := a.App
+	c := a.Context
 
 	return app.RenderHTML(c, "addUser", nil)
 }

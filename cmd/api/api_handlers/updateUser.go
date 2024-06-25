@@ -9,17 +9,12 @@ import (
 	"gamemasterweb.net/internal/data"
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/labstack/echo-contrib/session"
-	"github.com/labstack/echo/v4"
 )
 
-func UpdateUser(c echo.Context) error {
+func UpdateUser(a application.AppContext) error {
 
-	cc, ok := c.(*application.AppContext)
-	if !ok {
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to cast context"})
-	}
-
-	app := cc.App
+	app := a.App
+	c := a.Context
 
 	id, err := app.ReadIDParam(c)
 	if err != nil {
