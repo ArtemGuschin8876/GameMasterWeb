@@ -10,14 +10,6 @@ type TemplateData struct {
 	Users      []User
 }
 
-// type TemplateData struct {
-// 	Errors     []string
-// 	FormErrors map[string]string
-// 	User       *data.User
-// 	Flash      string
-// 	Users      []data.User
-// }
-
 func (t TemplateData) ValidationOfFormFields(data TemplateData, err error) {
 
 	if val, ok := err.(validation.Errors); ok {

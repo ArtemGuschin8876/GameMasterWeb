@@ -12,14 +12,6 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// type TemplateData struct {
-// 	Errors     []string
-// 	FormErrors map[string]string
-// 	User       *data.User
-// 	Flash      string
-// 	Users      []data.User
-// }
-
 func CreateUser(c echo.Context) error {
 	var user data.User
 
