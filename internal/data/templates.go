@@ -5,10 +5,18 @@ import validation "github.com/go-ozzo/ozzo-validation"
 type TemplateData struct {
 	Errors     []string
 	FormErrors map[string]string
-	User       User
+	User       *User
 	Flash      string
 	Users      []User
 }
+
+// type TemplateData struct {
+// 	Errors     []string
+// 	FormErrors map[string]string
+// 	User       *data.User
+// 	Flash      string
+// 	Users      []data.User
+// }
 
 func (t TemplateData) ValidationOfFormFields(data TemplateData, err error) {
 

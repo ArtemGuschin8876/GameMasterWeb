@@ -19,13 +19,14 @@ import (
 
 func main() {
 	var cfg application.Config
+	var DB application.DB
 
 	flag.IntVar(&cfg.Port, "port", 4000, "API Server PORT")
 	flag.Parse()
 
 	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
 
-	db, err := openDB(cfg)
+	db, err := openDB(DB)
 	if err != nil {
 		logger.Fatal(err)
 	}
@@ -62,12 +63,12 @@ func main() {
 	}
 }
 
-func openDB(cfg application.Config) (*sql.DB, error) {
+func openDB(DB application.DB) (*sql.DB, error) {
 
 	application.LoadEnv()
-	cfg.DB.DSN = os.Getenv("DSN_DB")
+	DB.DSN = os.Getenv("DSN_DB")
 
-	db, err := sql.Open("postgres", cfg.DB.DSN)
+	db, err := sql.Open("postgres", DB.DSN)
 	if err != nil {
 		return nil, err
 	}

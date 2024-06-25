@@ -58,7 +58,7 @@ func UpdateUser(c echo.Context) error {
 	user.About = input.About
 	user.Image = input.Image
 
-	tmplData := TemplateData{
+	tmplData := data.TemplateData{
 		User:       user,
 		FormErrors: make(map[string]string),
 	}

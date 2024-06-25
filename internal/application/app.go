@@ -18,12 +18,9 @@ type Response struct {
 	Message string      `json:"message,omitempty"`
 }
 
-type Config struct {
-	Port int
-	DB   struct {
-		DSN string
-	}
-}
+type DB struct{ DSN string }
+
+type Config struct{ Port int }
 
 type Application struct {
 	Logger    *log.Logger

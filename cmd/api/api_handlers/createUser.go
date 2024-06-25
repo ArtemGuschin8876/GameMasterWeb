@@ -12,13 +12,13 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type TemplateData struct {
-	Errors     []string
-	FormErrors map[string]string
-	User       *data.User
-	Flash      string
-	Users      []data.User
-}
+// type TemplateData struct {
+// 	Errors     []string
+// 	FormErrors map[string]string
+// 	User       *data.User
+// 	Flash      string
+// 	Users      []data.User
+// }
 
 func CreateUser(c echo.Context) error {
 	var user data.User
@@ -33,7 +33,7 @@ func CreateUser(c echo.Context) error {
 
 	if err := user.ValidateUser(); err != nil {
 
-		tmplData := TemplateData{
+		tmplData := data.TemplateData{
 			FormErrors: make(map[string]string),
 			User:       &user,
 		}
@@ -61,7 +61,7 @@ func CreateUser(c echo.Context) error {
 	if err != nil {
 		log.Println(err)
 		if errors.Is(err, data.ErrDuplicateEmail) {
-			tmplData := TemplateData{
+			tmplData := data.TemplateData{
 				FormErrors: map[string]string{"email": "Пользователь с таким email уже существует"},
 				User:       &user,
 			}
@@ -69,7 +69,7 @@ func CreateUser(c echo.Context) error {
 		}
 
 		if errors.Is(err, data.ErrDuplicateNickname) {
-			tmplData := TemplateData{
+			tmplData := data.TemplateData{
 				FormErrors: map[string]string{"nickname": "Пользователь с таким nickname уже существует"},
 				User:       &user,
 			}

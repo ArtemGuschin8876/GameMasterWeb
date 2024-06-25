@@ -28,7 +28,7 @@ func EditUserForm(c echo.Context) error {
 		}
 	}
 
-	tmplData := TemplateData{
+	tmplData := data.TemplateData{
 		User:       user,
 		FormErrors: make(map[string]string),
 	}

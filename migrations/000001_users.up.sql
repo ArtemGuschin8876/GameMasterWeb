@@ -8,6 +8,5 @@ CREATE TABLE IF NOT EXISTS users (
     image TEXT NOT NULL
 );
 
-ALTER TABLE users
-ADD CONSTRAINT unique_email UNIQUE (email),
-ADD CONSTRAINT unique_nickname UNIQUE (nickname);
+CREATE UNIQUE INDEX ON users (email);
+CREATE UNIQUE INDEX ON users (nickname);
