@@ -9,9 +9,8 @@ import (
 	"github.com/labstack/echo-contrib/session"
 )
 
-func ListUsers(a application.AppContext) error {
-	app := a.App
-	c := a.Context
+func ListUsers(c application.AppContext) error {
+	app := c.App
 
 	sess, err := session.Get("session", c)
 	if err != nil {

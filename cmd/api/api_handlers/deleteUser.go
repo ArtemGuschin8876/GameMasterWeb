@@ -9,11 +9,9 @@ import (
 
 type envelope map[string]interface{}
 
-func DeleteUser(a application.AppContext) error {
+func DeleteUser(c application.AppContext) error {
 
-	app := a.App
-	c := a.Context
-
+	app := c.App
 	id, err := app.ReadIDParam(c)
 	if err != nil {
 		return app.JsendError(c, "Id retrieval error")

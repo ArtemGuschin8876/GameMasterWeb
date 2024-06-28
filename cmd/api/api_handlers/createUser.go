@@ -11,11 +11,10 @@ import (
 	"github.com/labstack/echo-contrib/session"
 )
 
-func CreateUser(a application.AppContext) error {
+func CreateUser(c application.AppContext) error {
 	var user data.User
 
-	app := a.App
-	c := a.Context
+	app := c.App
 
 	if err := c.Bind(&user); err != nil {
 		log.Println(err)

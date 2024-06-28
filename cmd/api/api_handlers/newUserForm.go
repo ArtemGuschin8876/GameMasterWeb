@@ -4,9 +4,8 @@ import (
 	"gamemasterweb.net/internal/application"
 )
 
-func NewUserForm(a application.AppContext) error {
-	app := a.App
-	c := a.Context
+func NewUserForm(c application.AppContext) error {
+	app := c.App
 
 	return app.RenderHTML(c, "addUser", nil)
 }

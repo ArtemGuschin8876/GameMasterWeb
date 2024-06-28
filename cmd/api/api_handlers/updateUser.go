@@ -11,10 +11,9 @@ import (
 	"github.com/labstack/echo-contrib/session"
 )
 
-func UpdateUser(a application.AppContext) error {
+func UpdateUser(c application.AppContext) error {
 
-	app := a.App
-	c := a.Context
+	app := c.App
 
 	id, err := app.ReadIDParam(c)
 	if err != nil {

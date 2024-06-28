@@ -14,10 +14,9 @@ import (
 // @Produce json
 // @Success 200 {object} User
 // @Failure 404 {string} string
-func ShowUser(a application.AppContext) error {
+func ShowUser(c application.AppContext) error {
 
-	app := a.App
-	c := a.Context
+	app := c.App
 
 	id, err := app.ReadIDParam(c)
 	if err != nil {

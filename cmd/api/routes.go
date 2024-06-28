@@ -95,7 +95,7 @@ func checkRoutesPath(e *echo.Echo, app *application.Application) {
 
 func withAppContext(handler func(application.AppContext) error) func(echo.Context) error {
 	return func(c echo.Context) error {
-		appCtx := application.AppContext{Context: c}
-		return handler(appCtx)
+		appCtx := c.(*application.AppContext)
+		return handler(*appCtx)
 	}
 }
