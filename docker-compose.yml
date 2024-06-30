@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  app:
+    build: .
+    ports:
+      - "4000:4000"
+    environment:
+      DSN_DB: "postgresql://postgres:postgres@postgres:5432/gamemasterweb?sslmode=disable"
+    depends_on:
+      - postgres
+    command: ./scripts/migrate_and_run.sh
+
+  postgres:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./.docker/postgresql-data-local/:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_DB: gamemasterweb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
