@@ -4,6 +4,10 @@ import (
 	"net/http"
 	"os"
 
+	"gamemasterweb.net/cmd/api/api_handlers"
+	"gamemasterweb.net/internal/application"
+	"github.com/gorilla/sessions"
+	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 )
 
@@ -12,38 +16,55 @@ type pathsSwagger struct {
 	pathStaticSwagger string
 }
 
-type response struct {
-	Status  string      `json:"status"`
-	Data    interface{} `json:"data,omitempty"`
-	Message string      `json:"message,omitempty"`
-}
+func routes(app *application.Application) *echo.Echo {
 
-func (app *application) routes() *echo.Echo {
 	e := echo.New()
 
-	LoadEnv()
+	e.Use(RecoverPanic)
+
 	pathSwagger := pathsSwagger{
 		filePathSwagger:   os.Getenv("SWAGGER_FILE"),
 		pathStaticSwagger: os.Getenv("STATIC_SWAGGER"),
 	}
 
+	secretKeySession := os.Getenv("SECRET_KEY")
+	if secretKeySession == "" {
+		e.Logger.Fatal("SECRET_KEY environment variable is required")
+	}
+
 	e.Static("/swagger/", pathSwagger.pathStaticSwagger)
 	e.File("/docs/api/swagger.json", pathSwagger.filePathSwagger)
 
-	e.GET("/users", app.showAllUsersHandler)
-	e.GET("/users/:id", app.showOneUserHandler)
+	e.Use(session.Middleware(sessions.NewCookieStore([]byte(secretKeySession))))
 
-	e.POST("/users", app.addUsersHandler)
-	e.PUT("/users/:id", app.updateUsersHandler)
-	e.DELETE("/users/:id", app.deleteUsersHandler)
+	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			cc := &application.AppContext{Context: c, App: app}
+			return next(cc)
+		}
+	})
 
-	checkRoutesPath(e)
+	e.GET("/", func(c echo.Context) error {
+		return c.Redirect(http.StatusSeeOther, "/users")
+	})
+
+	e.GET("/users", withAppContext(api_handlers.ListUsers))
+	e.GET("/users/:id", withAppContext(api_handlers.ShowUser))
+	e.GET("/users/new", withAppContext(api_handlers.NewUserForm))
+	e.GET("/users/edit/:id", withAppContext(api_handlers.EditUserForm))
+
+	e.POST("/users", withAppContext(api_handlers.CreateUser))
+	e.POST("/users/:id", withAppContext(api_handlers.UpdateUser))
+
+	e.DELETE("/users/:id", withAppContext(api_handlers.DeleteUser))
+
+	checkRoutesPath(e, app)
 
 	return e
 
 }
 
-func checkRoutesPath(e *echo.Echo) {
+func checkRoutesPath(e *echo.Echo, app *application.Application) {
 
 	e.HTTPErrorHandler = func(err error, c echo.Context) {
 		code := http.StatusInternalServerError
@@ -57,18 +78,24 @@ func checkRoutesPath(e *echo.Echo) {
 		}
 
 		if code == http.StatusNotFound {
-			msg = "the requested resource could not be found"
-			c.JSON(http.StatusNotFound, response{
-				Status:  "fail",
-				Message: msg,
-			})
+			err := app.RenderHTML(c, "404", nil)
+			if err != nil {
+				msg = "err rendering 404 page"
+				c.String(http.StatusNotFound, msg)
+			}
 
 		} else {
-			c.JSON(code, response{
-				Status:  "error",
-				Message: msg,
-			})
+			res := app.Response
+			res.Status = "error"
+			res.Message = msg
+			c.JSON(code, res)
 		}
 	}
+}
 
+func withAppContext(handler func(application.AppContext) error) func(echo.Context) error {
+	return func(c echo.Context) error {
+		appCtx := c.(*application.AppContext)
+		return handler(*appCtx)
+	}
 }
