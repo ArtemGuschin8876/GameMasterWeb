@@ -10,3 +10,4 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE UNIQUE INDEX ON users (email);
 CREATE UNIQUE INDEX ON users (nickname);
+
