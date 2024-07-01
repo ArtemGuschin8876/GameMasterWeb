@@ -12,6 +12,7 @@ type envelope map[string]interface{}
 func DeleteUser(c application.AppContext) error {
 
 	app := c.App
+	
 	id, err := app.ReadIDParam(c)
 	if err != nil {
 		return app.JsendError(c, "Id retrieval error")
