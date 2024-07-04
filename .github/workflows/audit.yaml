@@ -34,7 +34,7 @@ jobs:
       uses: Jerome1337/gofmt-action@v1.0.5
       with:
         gofmt-path: ./
-        ofmt-flags: -l -d
+        gofmt-flags: -l -d
     
     - name: Debug gofmt
       run: gofmt -l .
