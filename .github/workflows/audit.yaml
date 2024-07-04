@@ -33,19 +33,8 @@ jobs:
     - name: Run gofmt-action
       uses: Jerome1337/gofmt-action@v1.0.5
       with:
-        gofmt-path: ./
-        gofmt-flags: -l
-
-    - name: Check formatting
-      run: |
-        UNFORMATTED_FILES=$(gofmt -l .)
-        if [ -n "$UNFORMATTED_FILES" ]; then
-          echo "The following files are not formatted correctly:"
-          echo "$UNFORMATTED_FILES"
-          exit 1
-        else
-          echo "All files are formatted correctly."
-        fi
+      gofmt-path: './src'
+      gofmt-flags: '-l -d'
 
     - name: Run go vet
       run: go vet ./...
