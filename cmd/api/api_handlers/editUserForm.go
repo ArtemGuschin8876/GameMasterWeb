@@ -33,7 +33,3 @@ func EditUserForm(c application.AppContext) error {
 
 	return app.RenderHTML(c, "updateUserForms", tmplData)
 }
-
-func Hge() {
-
-}
