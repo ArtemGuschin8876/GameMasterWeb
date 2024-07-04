@@ -28,11 +28,7 @@ jobs:
       run: go build -v ./...
 
     - name: Install dependencies
-      run: go mod tidy
-
-    - name: Run go fmt
-      run: go fmt ./...
-      continue-on-error: true  
+      run: go mod tidy 
 
     - name: Run gofmt-action
       uses: Jerome1337/gofmt-action@v1.0.5
