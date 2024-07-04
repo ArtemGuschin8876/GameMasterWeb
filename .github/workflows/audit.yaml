@@ -37,7 +37,8 @@ jobs:
     - name: Run gofmt-action
       uses: Jerome1337/gofmt-action@v1.0.5
       with:
-      gofmt-flags: -l -d
+      gofmt-path: './src'
+      gofmt-flags: '-l -d'
 
     - name: Run go vet
       run: go vet ./...
