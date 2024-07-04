@@ -15,7 +15,7 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-      
+
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
@@ -28,20 +28,20 @@ jobs:
       run: go build -v ./...
 
     - name: Install dependencies
-      run: go mod tidy 
+      run: go mod tidy
 
     - name: Run gofmt-action
       uses: Jerome1337/gofmt-action@v1.0.5
       with:
         gofmt-path: .
-        gofmt-flags: -l -d
+        gofmt-flags: -l
 
     - name: Check formatting
       run: |
-        unformatted=$(gofmt -l .)
-        if [ -n "$unformatted" ]; then
-          echo "All the following files are not correctly formatted"
-          echo "$unformatted"
+        UNFORMATTED_FILES=$(gofmt -l .)
+        if [ -n "$UNFORMATTED_FILES" ]; then
+          echo "The following files are not formatted correctly:"
+          echo "$UNFORMATTED_FILES"
           exit 1
         else
           echo "All files are formatted correctly."
