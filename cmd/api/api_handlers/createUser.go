@@ -18,7 +18,10 @@ func CreateUser(c application.AppContext) error {
 
 	if err := c.Bind(&user); err != nil {
 		log.Println(err)
-		return c.JSON(http.StatusOK, app.JsendError(c, "invalid request payload"))
+		return app.Respond(c, http.StatusBadRequest, app.JsendError(c, "invalid request payload"), "addUser", data.TemplateData{
+			FormErrors: map[string]string{"error": "invalid request payload"},
+			User:       &user,
+		})
 	}
 
 	if err := user.ValidateUser(); err != nil {
@@ -44,7 +47,7 @@ func CreateUser(c application.AppContext) error {
 				}
 			}
 		}
-		return app.RenderHTML(c, "addUser", tmplData)
+		return app.Respond(c, http.StatusBadRequest, tmplData, "addUser", tmplData)
 	}
 
 	err := app.Storage.User.Add(&user)
@@ -55,7 +58,7 @@ func CreateUser(c application.AppContext) error {
 				FormErrors: map[string]string{"email": "Пользователь с таким email уже существует"},
 				User:       &user,
 			}
-			return app.RenderHTML(c, "addUser", tmplData)
+			return app.Respond(c, http.StatusConflict, tmplData, "addUser", tmplData)
 		}
 
 		if errors.Is(err, data.ErrDuplicateNickname) {
@@ -63,16 +66,22 @@ func CreateUser(c application.AppContext) error {
 				FormErrors: map[string]string{"nickname": "Пользователь с таким nickname уже существует"},
 				User:       &user,
 			}
-			return app.RenderHTML(c, "addUser", tmplData)
-
+			return app.Respond(c, http.StatusBadRequest, tmplData, "addUser", tmplData)
 		}
-		log.Println(err)
+
+		return app.Respond(c, http.StatusInternalServerError, app.JsendError(c, "internal server error"), "addUser", data.TemplateData{
+			FormErrors: map[string]string{"error": "internal server error"},
+			User:       &user,
+		})
 	}
 
 	sess, err := session.Get("session", c)
 	if err != nil {
 		log.Println("session creation error")
-		return app.JsendError(c, "session creation error")
+		return app.Respond(c, http.StatusInternalServerError, app.JsendError(c, "internal server error"), "addUser", data.TemplateData{
+			FormErrors: map[string]string{"error": "internal server error"},
+			User:       &user,
+		})
 	}
 
 	sess.Values["flash"] = "User" + user.Nickname + " successfully created!"
