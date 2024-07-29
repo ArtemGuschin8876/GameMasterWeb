@@ -2,6 +2,7 @@ package api_handlers
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -25,7 +26,6 @@ func CreateUser(c application.AppContext) error {
 	}
 
 	if err := user.ValidateUser(); err != nil {
-
 		tmplData := data.TemplateData{
 			FormErrors: make(map[string]string),
 			User:       &user,
@@ -47,8 +47,16 @@ func CreateUser(c application.AppContext) error {
 				}
 			}
 		}
-		return app.Respond(c, http.StatusBadRequest, tmplData, "addUser", tmplData)
+
+		if c.Request().Header.Get("accept") == "application/json" {
+			return app.JsendSuccess(c, user)
+		} else {
+			return app.RenderHTML(c, "addUser", tmplData)
+		}
+		// return app.Respond(c, http.StatusBadRequest, tmplData, "addUser", tmplData)
 	}
+
+	fmt.Println("2")
 
 	err := app.Storage.User.Add(&user)
 	if err != nil {
