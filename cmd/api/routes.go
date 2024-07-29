@@ -9,6 +9,7 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 type pathsSwagger struct {
@@ -21,6 +22,10 @@ func routes(app *application.Application) *echo.Echo {
 	e := echo.New()
 
 	e.Use(RecoverPanic)
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+	}))
 
 	pathSwagger := pathsSwagger{
 		filePathSwagger:   os.Getenv("SWAGGER_FILE"),
