@@ -2,7 +2,6 @@ package api_handlers
 
 import (
 	"errors"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -31,32 +30,41 @@ func CreateUser(c application.AppContext) error {
 			User:       &user,
 		}
 
+		jsonData := data.JsonData{
+			FormErrors: make(map[string]string),
+		}
+
 		if val, ok := err.(validation.Errors); ok {
 			for field, valerr := range val {
 				switch field {
 				case "Name":
 					tmplData.FormErrors["name"] = valerr.Error()
+					jsonData.FormErrors["name"] = valerr.Error()
 				case "Nickname":
 					tmplData.FormErrors["nickname"] = valerr.Error()
+					jsonData.FormErrors["nickname"] = valerr.Error()
 				case "Email":
 					tmplData.FormErrors["email"] = valerr.Error()
+					jsonData.FormErrors["email"] = valerr.Error()
 				case "City":
 					tmplData.FormErrors["city"] = valerr.Error()
+					jsonData.FormErrors["city"] = valerr.Error()
+
 				case "About":
+					jsonData.FormErrors["about"] = valerr.Error()
 					tmplData.FormErrors["about"] = valerr.Error()
 				}
 			}
 		}
 
-		if c.Request().Header.Get("accept") == "application/json" {
-			return app.JsendSuccess(c, user)
+		if c.Request().Header.Get("Accept") == "application/json" {
+			return app.JsonError(c, jsonData)
 		} else {
 			return app.RenderHTML(c, "addUser", tmplData)
-		}
-		// return app.Respond(c, http.StatusBadRequest, tmplData, "addUser", tmplData)
-	}
 
-	fmt.Println("2")
+		}
+
+	}
 
 	err := app.Storage.User.Add(&user)
 	if err != nil {
