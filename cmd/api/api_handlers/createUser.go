@@ -4,6 +4,7 @@ import (
 	"errors"
 	"log"
 	"net/http"
+	"strings"
 
 	"gamemasterweb.net/internal/application"
 	"gamemasterweb.net/internal/data"
@@ -34,42 +35,11 @@ func CreateUser(c application.AppContext) error {
 			FormErrors: make(map[string]string),
 		}
 
-		// if val, ok := err.(validation.Errors); ok {
-		// 	for field, valerr := range val {
-		// 		switch field {
-		// 		case "Name":
-		// 			tmplData.FormErrors["name"] = valerr.Error()
-		// 			jsonData.FormErrors["name"] = valerr.Error()
-		// 		case "Nickname":
-		// 			tmplData.FormErrors["nickname"] = valerr.Error()
-		// 			jsonData.FormErrors["nickname"] = valerr.Error()
-		// 		case "Email":
-		// 			tmplData.FormErrors["email"] = valerr.Error()
-		// 			jsonData.FormErrors["email"] = valerr.Error()
-		// 		case "City":
-		// 			tmplData.FormErrors["city"] = valerr.Error()
-		// 			jsonData.FormErrors["city"] = valerr.Error()
-		// 		case "About":
-		// 			jsonData.FormErrors["about"] = valerr.Error()
-		// 			tmplData.FormErrors["about"] = valerr.Error()
-		// 		}
-		// 	}
-		// }
-
 		if valErrors, ok := err.(validation.Errors); ok {
-			fieldMapping := map[string]string{
-				"Name":     "name",
-				"Nickname": "nickname",
-				"Email":    "email",
-				"City":     "city",
-				"About":    "about",
-			}
-
 			for field, valerr := range valErrors {
-				if mappedField, exists := fieldMapping[field]; exists {
-					tmplData.FormErrors[mappedField] = valerr.Error()
-					jsonData.FormErrors[mappedField] = valerr.Error()
-				}
+				mappedField := strings.ToLower(field)
+				tmplData.FormErrors[mappedField] = valerr.Error()
+				jsonData.FormErrors[mappedField] = valerr.Error()
 			}
 		}
 

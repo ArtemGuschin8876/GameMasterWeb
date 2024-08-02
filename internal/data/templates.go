@@ -11,7 +11,7 @@ type TemplateData struct {
 }
 
 type JsonData struct {
-	FormErrors map[string]string `json:"formerrors"`
+	FormErrors map[string]string `json:"form_errors"`
 }
 
 func (t TemplateData) ValidationOfFormFields(data TemplateData, err error) {
