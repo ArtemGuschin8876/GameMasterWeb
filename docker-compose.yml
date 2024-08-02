@@ -7,7 +7,9 @@ services:
       SECRET_KEY: 1111
       DSN_DB: "postgresql://postgres:postgres@postgres:5432/gamemasterweb?sslmode=disable"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+        restart: true
     command: ./scripts/migrate_and_run.sh
 
   postgres:
@@ -20,3 +22,9 @@ services:
       POSTGRES_DB: gamemasterweb
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d gamemasterweb"]
+      interval: 0.5s
+      retries: 10
+      start_period: 30s
+      timeout: 1s
