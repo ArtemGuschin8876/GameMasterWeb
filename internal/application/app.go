@@ -82,3 +82,18 @@ func (app *Application) JsendError(c echo.Context, message string) error {
 	}
 	return c.JSON(http.StatusOK, res)
 }
+
+func (app *Application) JsonError(c echo.Context, data interface{}) error {
+	res := Response{
+		Status: "error",
+		Data:   data,
+	}
+	return c.JSON(http.StatusOK, res)
+}
+
+func (app *Application) Respond(c echo.Context, status int, jsonResponse interface{}, htmlTmpl string, tmplData data.TemplateData) error {
+	if c.Request().Header.Get("Accept") == "application/json" {
+		return app.JsendSuccess(c, jsonResponse)
+	}
+	return c.Render(status, htmlTmpl, tmplData)
+}

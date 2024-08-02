@@ -10,6 +10,10 @@ type TemplateData struct {
 	Users      []User
 }
 
+type JsonData struct {
+	FormErrors map[string]string `json:"form_errors"`
+}
+
 func (t TemplateData) ValidationOfFormFields(data TemplateData, err error) {
 
 	if val, ok := err.(validation.Errors); ok {
