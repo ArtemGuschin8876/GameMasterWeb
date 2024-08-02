@@ -16,7 +16,6 @@ var (
 )
 
 func (m UserModel) Add(user *User) error {
-
 	isUniqueEmail, err := m.isEmailUnique(user.Email)
 	if err != nil {
 		log.Println("error verifying a unique email")
