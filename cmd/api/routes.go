@@ -20,8 +20,8 @@ type pathsSwagger struct {
 func routes(app *application.Application) *echo.Echo {
 
 	e := echo.New()
-
 	e.Use(RecoverPanic)
+
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"*"},
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
@@ -53,15 +53,15 @@ func routes(app *application.Application) *echo.Echo {
 		return c.Redirect(http.StatusSeeOther, "/users")
 	})
 
-	e.GET("/users", withAppContext(api_handlers.ListUsers))
-	e.GET("/users/:id", withAppContext(api_handlers.ShowUser))
-	e.GET("/users/new", withAppContext(api_handlers.NewUserForm))
-	e.GET("/users/edit/:id", withAppContext(api_handlers.EditUserForm))
+	e.GET("/users", app.WithAppContext(api_handlers.ListUsers))
+	e.GET("/users/:id", app.WithAppContext(api_handlers.ShowUser))
+	e.GET("/users/new", app.WithAppContext(api_handlers.NewUserForm))
+	e.GET("/users/edit/:id", app.WithAppContext(api_handlers.EditUserForm))
 
-	e.POST("/users", withAppContext(api_handlers.CreateUser))
-	e.POST("/users/:id", withAppContext(api_handlers.UpdateUser))
+	e.POST("/users", app.WithAppContext(api_handlers.CreateUser))
+	e.POST("/users/:id", app.WithAppContext(api_handlers.UpdateUser))
 
-	e.DELETE("/users/:id", withAppContext(api_handlers.DeleteUser))
+	e.DELETE("/users/:id", app.WithAppContext(api_handlers.DeleteUser))
 
 	checkRoutesPath(e, app)
 
@@ -70,7 +70,6 @@ func routes(app *application.Application) *echo.Echo {
 }
 
 func checkRoutesPath(e *echo.Echo, app *application.Application) {
-
 	e.HTTPErrorHandler = func(err error, c echo.Context) {
 		code := http.StatusInternalServerError
 		msg := "the server was unable to process your request"
@@ -95,12 +94,5 @@ func checkRoutesPath(e *echo.Echo, app *application.Application) {
 			res.Message = msg
 			c.JSON(code, res)
 		}
-	}
-}
-
-func withAppContext(handler func(application.AppContext) error) func(echo.Context) error {
-	return func(c echo.Context) error {
-		appCtx := c.(*application.AppContext)
-		return handler(*appCtx)
 	}
 }

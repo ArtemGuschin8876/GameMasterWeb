@@ -10,7 +10,15 @@ var (
 )
 
 type Storage struct {
-	User UserModel
+	User UserStorage
+}
+
+type UserStorage interface {
+	Add(user *User) error
+	Get(id int64) (*User, error)
+	GetAll() ([]User, error)
+	Update(user *User) error
+	Delete(id int64) error
 }
 
 func NewStorage(db *sql.DB) Storage {

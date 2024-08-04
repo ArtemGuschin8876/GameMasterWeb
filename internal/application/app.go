@@ -97,3 +97,17 @@ func (app *Application) Respond(c echo.Context, status int, jsonResponse interfa
 	}
 	return c.Render(status, htmlTmpl, tmplData)
 }
+
+func (app *Application) WithAppContext(handler func(AppContext) error) func(echo.Context) error {
+	return func(c echo.Context) error {
+		// appCtx := c.(*AppContext)
+		// return handler(*appCtx)
+
+		appCtx := AppContext{
+			Context: c,
+			App:     app,
+		}
+
+		return handler(appCtx)
+	}
+}
