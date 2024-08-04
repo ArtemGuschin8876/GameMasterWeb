@@ -1,14 +1,17 @@
 package handler_test
 
 import (
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 
+	"gamemasterweb.net/cmd/api/api_handlers"
 	"gamemasterweb.net/internal/application"
 	"gamemasterweb.net/internal/data"
 	"github.com/labstack/echo/v4"
+	"github.com/stretchr/testify/assert"
 )
 
 var (
@@ -22,11 +25,12 @@ var (
 	}`
 )
 
-func TestCreateUser(t *testing.T) {
+func TestCreateUserJSONResponse(t *testing.T) {
 	e := echo.New()
 
 	req := httptest.NewRequest(http.MethodPost, "/", strings.NewReader(userJSON))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	req.Header.Set(echo.HeaderAccept, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
 
@@ -40,10 +44,18 @@ func TestCreateUser(t *testing.T) {
 		},
 	}
 
-	c.Set("app", app)
+	appCtx := application.AppContext{
+		Context: c,
+		App:     app,
+	}
 
-	// if assert.NoError(t, api_handlers.CreateUser()) {
-	// 	assert.Equal(t, http.StatusSeeOther, rec.Code)
-	// 	assert.Equal(t, userJSON, rec.Body.String())
-	// }
+	c.Set("app", appCtx)
+	fmt.Println("appCtx.App.Storage:", appCtx.App.Storage)
+	fmt.Println("appCtx.App.Storage.UserMock:", appCtx.App.Storage.UserMock)
+
+	if assert.NoError(t, api_handlers.CreateUser(appCtx)) {
+		assert.Equal(t, http.StatusSeeOther, rec.Code)
+		assert.Contains(t, rec.Header().Get("Location"), "/users")
+		assert.JSONEq(t, userJSON, rec.Body.String())
+	}
 }
