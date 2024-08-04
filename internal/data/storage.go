@@ -10,34 +10,19 @@ var (
 )
 
 type Storage struct {
-	User     UserModel
-	UserMock UserStorage
+	User UserStorage
 }
 
 type UserStorage interface {
 	Add(user *User) error
-}
-
-type MockUserStorage struct {
-	Users map[string]*User
-	Err   error
+	Get(id int64) (*User, error)
+	GetAll() ([]User, error)
+	Update(user *User) error
+	Delete(id int64) error
 }
 
 func NewStorage(db *sql.DB) Storage {
 	return Storage{
 		User: UserModel{DB: db},
 	}
-}
-
-func (m *MockUserStorage) Add(user *User) error {
-	if m.Err != nil {
-		return m.Err
-	}
-
-	if _, exists := m.Users[user.Email]; exists {
-		return ErrDuplicateEmail
-	}
-
-	m.Users[user.Email] = user
-	return nil
 }

@@ -1,7 +1,6 @@
-package handler_test
+package handlerstest
 
 import (
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -16,19 +15,19 @@ import (
 
 var (
 	userJSON = `{
-  "name": "maaad",
-  "nickname": "sswssdaww",
-  "email": "dawdasrgff@gmail.com",
+  "name": "dsadsaw",
+  "nickname": "asweadasdqd",
+  "email": "yreuwdasisadsadadeirot@gmail.com",
   "city": "Asdr",
   "about": "asd dsad sadsadasdasdw wdxsdsadsa awd a s",
   "image": ""
-	}`
+}`
 )
 
 func TestCreateUserJSONResponse(t *testing.T) {
 	e := echo.New()
 
-	req := httptest.NewRequest(http.MethodPost, "/", strings.NewReader(userJSON))
+	req := httptest.NewRequest(http.MethodPost, "http://localhost:4000/users", strings.NewReader(userJSON))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	req.Header.Set(echo.HeaderAccept, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
@@ -40,7 +39,7 @@ func TestCreateUserJSONResponse(t *testing.T) {
 
 	app := &application.Application{
 		Storage: data.Storage{
-			UserMock: mockStorage,
+			User: mockStorage,
 		},
 	}
 
@@ -50,12 +49,10 @@ func TestCreateUserJSONResponse(t *testing.T) {
 	}
 
 	c.Set("app", appCtx)
-	fmt.Println("appCtx.App.Storage:", appCtx.App.Storage)
-	fmt.Println("appCtx.App.Storage.UserMock:", appCtx.App.Storage.UserMock)
 
 	if assert.NoError(t, api_handlers.CreateUser(appCtx)) {
-		assert.Equal(t, http.StatusSeeOther, rec.Code)
-		assert.Contains(t, rec.Header().Get("Location"), "/users")
-		assert.JSONEq(t, userJSON, rec.Body.String())
+		assert.Equal(t, http.StatusOK, rec.Code)
+		assert.Equal(t, "application/json", rec.Header().Get("Content-Type"))
+		assert.Equal(t, userJSON, rec.Body.String())
 	}
 }

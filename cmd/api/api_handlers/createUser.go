@@ -47,7 +47,6 @@ func CreateUser(c application.AppContext) error {
 			return app.JsonError(c, jsonData)
 		} else {
 			return app.RenderHTML(c, "addUser", tmplData)
-
 		}
 
 	}

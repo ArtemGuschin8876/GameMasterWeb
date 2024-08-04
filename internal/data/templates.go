@@ -3,11 +3,11 @@ package data
 import validation "github.com/go-ozzo/ozzo-validation"
 
 type TemplateData struct {
-	Errors     []string
-	FormErrors map[string]string
-	User       *User
-	Flash      string
-	Users      []User
+	Errors     []string          `json:"errors,omitempty"`
+	FormErrors map[string]string `json:"form_errors,omitempty"`
+	User       *User             `json:"user,omitempty"`
+	Flash      string            `json:"flash,omitempty"`
+	Users      []User            `json:"users,omitempty"`
 }
 
 type JsonData struct {
