@@ -14,36 +14,15 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var (
-	userJSON = `{
-  "name": "User",
-  "nickname": "UserNickname",
-  "email": "UserTest@gmail.com",
-  "city": "Usersk",
-  "about": "testing json data for test handler",
-  "image": ""
-}`
+// var (
+// 	expectedHTML = `<span class="block sm:inline">User UserNickname successfully created!</span>`
+// )
 
-	expectedJSON = `{
-	"status": "success",
-	"data": {
-		"id": 0,
-		"name": "User",
-		"nickname": "UserNickname",
-		"email": "UserTest@gmail.com",
-		"city": "Usersk",
-		"about": "testing json data for test handler",
-		"image": ""
-	}
-}`
-)
-
-func TestCreateUserJSONResponse(t *testing.T) {
+func TestCreateUserHTMLResponse(t *testing.T) {
 	e := echo.New()
 
 	req := httptest.NewRequest(http.MethodPost, "/users", strings.NewReader(userJSON))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-	req.Header.Set(echo.HeaderAccept, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
 
@@ -69,7 +48,7 @@ func TestCreateUserJSONResponse(t *testing.T) {
 	err := api_handlers.CreateUser(appCtx)
 	assert.NoError(t, err)
 
-	assert.Equal(t, http.StatusOK, rec.Code)
-	assert.Equal(t, "application/json", rec.Header().Get("Content-Type"))
-	assert.JSONEq(t, expectedJSON, rec.Body.String())
+	assert.Equal(t, http.StatusSeeOther, rec.Code)
+	expectedRedirectURL := "/users"
+	assert.Equal(t, expectedRedirectURL, rec.Header().Get("Location"))
 }
