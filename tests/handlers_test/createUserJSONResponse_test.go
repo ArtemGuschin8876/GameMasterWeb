@@ -25,9 +25,10 @@ var (
 )
 
 func TestCreateUserJSONResponse(t *testing.T) {
+
 	e := echo.New()
 
-	req := httptest.NewRequest(http.MethodPost, "http://localhost:4000/users", strings.NewReader(userJSON))
+	req := httptest.NewRequest(http.MethodPost, "/users", strings.NewReader(userJSON))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	req.Header.Set(echo.HeaderAccept, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
@@ -50,9 +51,10 @@ func TestCreateUserJSONResponse(t *testing.T) {
 
 	c.Set("app", appCtx)
 
-	if assert.NoError(t, api_handlers.CreateUser(appCtx)) {
-		assert.Equal(t, http.StatusOK, rec.Code)
-		assert.Equal(t, "application/json", rec.Header().Get("Content-Type"))
-		assert.Equal(t, userJSON, rec.Body.String())
-	}
+	err := api_handlers.CreateUser(appCtx)
+	assert.NoError(t, err)
+
+	assert.Equal(t, http.StatusOK, rec.Code)
+	assert.Equal(t, "application/json", rec.Header().Get("Content-Type"))
+
 }

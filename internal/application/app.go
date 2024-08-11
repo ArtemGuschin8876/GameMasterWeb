@@ -61,10 +61,11 @@ func (app *Application) RenderHTML(c echo.Context, fileName string, s any) error
 	return nil
 }
 
-func LoadEnv() {
+func LoadEnv() error {
 	if err := godotenv.Load(); err != nil {
 		log.Print("No .env file found")
 	}
+	return nil
 }
 
 func (app *Application) JsendSuccess(c echo.Context, data interface{}) error {

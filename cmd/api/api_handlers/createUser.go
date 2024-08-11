@@ -48,7 +48,6 @@ func CreateUser(c application.AppContext) error {
 		} else {
 			return app.RenderHTML(c, "addUser", tmplData)
 		}
-
 	}
 
 	err := app.Storage.User.Add(&user)
@@ -85,9 +84,13 @@ func CreateUser(c application.AppContext) error {
 		})
 	}
 
-	sess.Values["flash"] = "User" + user.Nickname + " successfully created!"
+	sess.Values["flash"] = "User " + user.Nickname + " successfully created!"
 	if err := sess.Save(c.Request(), c.Response()); err != nil {
-		return err
+		log.Println("session save error")
+		return app.Respond(c, http.StatusInternalServerError, app.JsendError(c, "internal server error"), "addUser", data.TemplateData{
+			FormErrors: map[string]string{"error": "internal server error"},
+			User:       &user,
+		})
 	}
 
 	return c.Redirect(http.StatusSeeOther, "/users")
