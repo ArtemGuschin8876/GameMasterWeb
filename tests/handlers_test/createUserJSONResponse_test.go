@@ -9,17 +9,18 @@ import (
 	"gamemasterweb.net/cmd/api/api_handlers"
 	"gamemasterweb.net/internal/application"
 	"gamemasterweb.net/internal/data"
+	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
 )
 
 var (
 	userJSON = `{
-  "name": "dsadsaw",
-  "nickname": "asweadasdqd",
-  "email": "yreuwdasisadsadadeirot@gmail.com",
-  "city": "Asdr",
-  "about": "asd dsad sadsadasdasdw wdxsdsadsa awd a s",
+  "name": "User",
+  "nickname": "UserNickname",
+  "email": "UserTest@gmail.com",
+  "city": "Usersk",
+  "about": "testing json data for test handler",
   "image": ""
 }`
 )
@@ -33,6 +34,8 @@ func TestCreateUserJSONResponse(t *testing.T) {
 	req.Header.Set(echo.HeaderAccept, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
+
+	c.Set("_session_store", sessions.NewCookieStore([]byte("secret")))
 
 	mockStorage := &data.MockUserStorage{
 		Users: make(map[string]*data.User),
@@ -57,4 +60,17 @@ func TestCreateUserJSONResponse(t *testing.T) {
 	assert.Equal(t, http.StatusOK, rec.Code)
 	assert.Equal(t, "application/json", rec.Header().Get("Content-Type"))
 
+	expectedJSON := `{
+		"status": "success",
+		"data": {
+			"id": 0,
+			"name": "User",
+			"nickname": "UserNickname",
+			"email": "UserTest@gmail.com",
+			"city": "Usersk",
+			"about": "testing json data for test handler",
+			"image": ""
+		}
+	}`
+	assert.JSONEq(t, expectedJSON, rec.Body.String())
 }
