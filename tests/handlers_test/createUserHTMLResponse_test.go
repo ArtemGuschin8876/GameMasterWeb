@@ -64,5 +64,8 @@ func TestCreateUserHTMLResponse(t *testing.T) {
 	err := api_handlers.CreateUser(appCtx)
 	assert.NoError(t, err)
 
+	expectedRedirectURL := "/users"
+
 	assert.Equal(t, http.StatusSeeOther, rec.Code)
+	assert.Equal(t, expectedRedirectURL, rec.Header().Get("Location"))
 }
