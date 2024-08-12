@@ -5,11 +5,9 @@ import (
 	"database/sql"
 	"flag"
 	"fmt"
-	"html/template"
 	"log"
 	"net/http"
 	"os"
-	"path/filepath"
 	"time"
 
 	"gamemasterweb.net/internal/application"
@@ -34,7 +32,7 @@ func main() {
 	defer db.Close()
 	logger.Printf("database connection pool established")
 
-	templateCache, err := newTemplateCache()
+	templateCache, err := application.NewTemplateCache()
 	if err != nil {
 		logger.Fatal(err)
 	}
@@ -85,24 +83,24 @@ func openDB(DB application.DB) (*sql.DB, error) {
 	return db, nil
 }
 
-func newTemplateCache() (map[string]*template.Template, error) {
-	cache := map[string]*template.Template{}
+// func NewTemplateCache() (map[string]*template.Template, error) {
+// 	cache := map[string]*template.Template{}
 
-	pages := []string{
-		"./static/ui/html/table.html",
-		"./static/ui/html/tableAllUsers.html",
-		"./static/ui/html/addUser.html",
-		"./static/ui/html/404.html",
-		"./static/ui/html/updateUserForms.html",
-	}
+// 	pages := []string{
+// 		"./static/ui/html/table.html",
+// 		"./static/ui/html/tableAllUsers.html",
+// 		"./static/ui/html/addUser.html",
+// 		"./static/ui/html/404.html",
+// 		"./static/ui/html/updateUserForms.html",
+// 	}
 
-	for _, page := range pages {
-		ts, err := template.ParseFiles(page)
-		if err != nil {
-			return nil, err
-		}
+// 	for _, page := range pages {
+// 		ts, err := template.ParseFiles(page)
+// 		if err != nil {
+// 			return nil, err
+// 		}
 
-		cache[filepath.Base(page)] = ts
-	}
-	return cache, nil
-}
+// 		cache[filepath.Base(page)] = ts
+// 	}
+// 	return cache, nil
+// }

@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"path/filepath"
 	"strconv"
 
 	"gamemasterweb.net/internal/data"
@@ -23,11 +24,12 @@ type DB struct{ DSN string }
 type Config struct{ Port int }
 
 type Application struct {
-	Logger    *log.Logger
-	Config    Config
-	Storage   data.Storage
-	Templates map[string]*template.Template
-	Response  Response
+	Logger           *log.Logger
+	Config           Config
+	Storage          data.Storage
+	Templates        map[string]*template.Template
+	Response         Response
+	TemplateTestPath string
 }
 
 func (app *Application) ReadIDParam(c echo.Context) (int64, error) {
@@ -101,8 +103,6 @@ func (app *Application) Respond(c echo.Context, status int, jsonResponse interfa
 
 func (app *Application) WithAppContext(handler func(AppContext) error) func(echo.Context) error {
 	return func(c echo.Context) error {
-		// appCtx := c.(*AppContext)
-		// return handler(*appCtx)
 
 		appCtx := AppContext{
 			Context: c,
@@ -111,4 +111,26 @@ func (app *Application) WithAppContext(handler func(AppContext) error) func(echo
 
 		return handler(appCtx)
 	}
+}
+
+func NewTemplateCache() (map[string]*template.Template, error) {
+	cache := map[string]*template.Template{}
+
+	pages := []string{
+		"./static/ui/html/table.html",
+		"./static/ui/html/tableAllUsers.html",
+		"./static/ui/html/addUser.html",
+		"./static/ui/html/404.html",
+		"./static/ui/html/updateUserForms.html",
+	}
+
+	for _, page := range pages {
+		ts, err := template.ParseFiles(page)
+		if err != nil {
+			return nil, err
+		}
+
+		cache[filepath.Base(page)] = ts
+	}
+	return cache, nil
 }
