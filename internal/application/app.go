@@ -91,7 +91,7 @@ func (app *Application) JsonError(c echo.Context, data interface{}) error {
 		Status: "error",
 		Data:   data,
 	}
-	return c.JSON(http.StatusOK, res)
+	return c.JSON(http.StatusBadRequest, res)
 }
 
 func (app *Application) Respond(c echo.Context, status int, jsonResponse interface{}, htmlTmpl string, tmplData data.TemplateData) error {

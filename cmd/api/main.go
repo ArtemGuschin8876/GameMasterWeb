@@ -82,25 +82,3 @@ func openDB(DB application.DB) (*sql.DB, error) {
 
 	return db, nil
 }
-
-// func NewTemplateCache() (map[string]*template.Template, error) {
-// 	cache := map[string]*template.Template{}
-
-// 	pages := []string{
-// 		"./static/ui/html/table.html",
-// 		"./static/ui/html/tableAllUsers.html",
-// 		"./static/ui/html/addUser.html",
-// 		"./static/ui/html/404.html",
-// 		"./static/ui/html/updateUserForms.html",
-// 	}
-
-// 	for _, page := range pages {
-// 		ts, err := template.ParseFiles(page)
-// 		if err != nil {
-// 			return nil, err
-// 		}
-
-// 		cache[filepath.Base(page)] = ts
-// 	}
-// 	return cache, nil
-// }
