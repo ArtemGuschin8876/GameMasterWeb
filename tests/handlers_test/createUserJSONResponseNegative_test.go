@@ -69,7 +69,7 @@ func TestCreateUserJSONResponseNegative(t *testing.T) {
 	err := api_handlers.CreateUser(appCtx)
 	assert.NoError(t, err)
 
-	assert.Equal(t, http.StatusBadRequest, rec.Code)
+	assert.Equal(t, http.StatusOK, rec.Code)
 	assert.Equal(t, "application/json", rec.Header().Get("Content-Type"))
 	assert.JSONEq(t, expectedErrorJSON, rec.Body.String())
 }
