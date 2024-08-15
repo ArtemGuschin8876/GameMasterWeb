@@ -1,4 +1,4 @@
-package handlerstest
+package createUserHandler_tests
 
 import (
 	"bytes"
