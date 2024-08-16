@@ -1,5 +1,10 @@
 package data
 
+import (
+	"fmt"
+	"strconv"
+)
+
 type MockUserStorage struct {
 	Users map[string]*User
 	Err   error
@@ -19,8 +24,12 @@ func (m *MockUserStorage) Add(user *User) error {
 }
 
 func (m *MockUserStorage) Get(id int64) (*User, error) {
-	var User *User
-	return User, nil
+	idStr := strconv.FormatInt(id, 10)
+	user, exists := m.Users[idStr]
+	if !exists {
+		return nil, fmt.Errorf("user with id %d not found", id)
+	}
+	return user, nil
 }
 
 func (m *MockUserStorage) GetAll() ([]User, error) {
@@ -34,6 +43,11 @@ func (m *MockUserStorage) GetAll() ([]User, error) {
 }
 
 func (m *MockUserStorage) Update(user *User) error {
+	if _, exists := m.Users[user.Nickname]; !exists {
+		return fmt.Errorf("user not found")
+	}
+
+	m.Users[user.Nickname] = user
 	return nil
 }
 
