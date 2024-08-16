@@ -24,7 +24,13 @@ func (m *MockUserStorage) Get(id int64) (*User, error) {
 }
 
 func (m *MockUserStorage) GetAll() ([]User, error) {
-	return nil, nil
+	var users []User
+
+	for _, user := range m.Users {
+		users = append(users, *user)
+	}
+
+	return users, nil
 }
 
 func (m *MockUserStorage) Update(user *User) error {

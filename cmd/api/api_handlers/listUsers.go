@@ -1,7 +1,6 @@
 package api_handlers
 
 import (
-	"log"
 	"strings"
 
 	"gamemasterweb.net/internal/application"
@@ -32,22 +31,17 @@ func ListUsers(c application.AppContext) error {
 		return app.JsendError(c, "error getting the list of users")
 	}
 
-	acceptHeader := c.Request().Header.Get("Accept")
-
-	if strings.Contains(acceptHeader, "application/json") {
-		return app.JsendSuccess(c, users)
-	}
-
 	data := data.TemplateData{
 		Users: users,
 		Flash: flashMessage,
 	}
 
-	err = app.RenderHTML(c, "tableAllUsers", data)
-	if err != nil {
-		log.Println("file rendering error")
-		return app.JsendError(c, "file rendering error")
+	acceptHeader := c.Request().Header.Get("Accept")
+
+	if strings.Contains(acceptHeader, "application/json") {
+		return app.JsendSuccess(c, users)
+	} else {
+		return app.RenderHTML(c, "tableAllUsers", data)
 	}
 
-	return nil
 }

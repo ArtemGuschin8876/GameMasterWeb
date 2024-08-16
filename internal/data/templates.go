@@ -1,6 +1,8 @@
 package data
 
-import validation "github.com/go-ozzo/ozzo-validation"
+import (
+	validation "github.com/go-ozzo/ozzo-validation"
+)
 
 type TemplateData struct {
 	Errors     []string          `json:"errors,omitempty"`

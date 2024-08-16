@@ -117,19 +117,20 @@ func NewTemplateCache() (map[string]*template.Template, error) {
 	cache := map[string]*template.Template{}
 
 	pages := []string{
-		"./static/ui/html/table.html",
 		"./static/ui/html/tableAllUsers.html",
+		"./static/ui/html/table.html",
 		"./static/ui/html/addUser.html",
 		"./static/ui/html/404.html",
 		"./static/ui/html/updateUserForms.html",
 	}
 
 	for _, page := range pages {
+		log.Printf("Attempting to open template file: %s", page)
 		ts, err := template.ParseFiles(page)
 		if err != nil {
+			log.Printf("Error loading template %s: %v", page, err)
 			return nil, err
 		}
-
 		cache[filepath.Base(page)] = ts
 	}
 	return cache, nil
