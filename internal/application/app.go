@@ -2,6 +2,7 @@ package application
 
 import (
 	"errors"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -134,4 +135,16 @@ func NewTemplateCache() (map[string]*template.Template, error) {
 		cache[filepath.Base(page)] = ts
 	}
 	return cache, nil
+}
+
+func InitTemplateCache() map[string]*template.Template {
+	templates := make(map[string]*template.Template)
+	files, _ := filepath.Glob("./static/ui/html/*.html")
+	for _, file := range files {
+		name := filepath.Base(file)
+		tmpl, _ := template.ParseFiles(file)
+		templates[name] = tmpl
+		fmt.Println("Loaded template:", name)
+	}
+	return templates
 }
