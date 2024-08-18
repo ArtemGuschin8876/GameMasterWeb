@@ -4,6 +4,7 @@ import (
 	"errors"
 	"log"
 	"net/http"
+	"strings"
 
 	"gamemasterweb.net/internal/application"
 	"gamemasterweb.net/internal/data"
@@ -52,29 +53,29 @@ func UpdateUser(c application.AppContext) error {
 	user.About = input.About
 	user.Image = input.Image
 
-	tmplData := data.TemplateData{
-		User:       user,
+	jsonData := data.JsonData{
 		FormErrors: make(map[string]string),
 	}
 
 	if err := user.ValidateUser(); err != nil {
-		if val, ok := err.(validation.Errors); ok {
-			for field, valerr := range val {
-				switch field {
-				case "Name":
-					tmplData.FormErrors["name"] = valerr.Error()
-				case "Nickname":
-					tmplData.FormErrors["nickname"] = valerr.Error()
-				case "Email":
-					tmplData.FormErrors["email"] = valerr.Error()
-				case "City":
-					tmplData.FormErrors["city"] = valerr.Error()
-				case "About":
-					tmplData.FormErrors["about"] = valerr.Error()
-				}
+		tmplData := data.TemplateData{
+			FormErrors: make(map[string]string),
+			User:       user,
+		}
+
+		if valErrors, ok := err.(validation.Errors); ok {
+			for field, valerr := range valErrors {
+				mappedField := strings.ToLower(field)
+				tmplData.FormErrors[mappedField] = valerr.Error()
+				jsonData.FormErrors[mappedField] = valerr.Error()
 			}
 		}
-		return app.RenderHTML(c, "updateUserForms", tmplData)
+
+		if c.Request().Header.Get("Accept") == "application/json" {
+			return app.JsonError(c, jsonData)
+		} else {
+			return app.RenderHTML(c, "updateUserForms", tmplData)
+		}
 	}
 
 	err = app.Storage.User.Update(user)
@@ -93,5 +94,9 @@ func UpdateUser(c application.AppContext) error {
 		return err
 	}
 
-	return c.Redirect(http.StatusSeeOther, "/users")
+	if c.Request().Header.Get("Accept") == "application/json" {
+		return app.JsendSuccess(c, user)
+	} else {
+		return c.Redirect(http.StatusSeeOther, "/users")
+	}
 }

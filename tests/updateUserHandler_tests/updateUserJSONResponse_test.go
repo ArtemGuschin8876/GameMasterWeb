@@ -14,7 +14,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// Эти сессии ебучие это беда какая-то=)
 func TestUpdateUserSessionAndRedirect(t *testing.T) {
 	e := echo.New()
 
@@ -27,12 +26,12 @@ func TestUpdateUserSessionAndRedirect(t *testing.T) {
 				Email:    "oldemail@example.com",
 				City:     "Old City",
 				About:    "Old about",
+				Image:    "",
 			},
 		},
 	}
 
-	body := `{"name":"New Name","nickname":"newnickname","email":"newemail@example.com","city":"New City","about":"New about","image":"newimage.jpg"}`
-
+	body := `{"name":"New Name","nickname":"newnickname","email":"newemail@example.com","city":"New City","about":"New aboutaboutaboutaboutaboutaboutabout","image":"newimage.jpg"}`
 	req := httptest.NewRequest(http.MethodPost, "/users/1", strings.NewReader(body))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	req.Header.Set(echo.HeaderAccept, echo.MIMEApplicationJSON)
@@ -58,6 +57,19 @@ func TestUpdateUserSessionAndRedirect(t *testing.T) {
 	err := api_handlers.UpdateUser(appCtx)
 	assert.NoError(t, err)
 
-	assert.Equal(t, http.StatusSeeOther, rec.Code)
-	assert.Equal(t, "/users", rec.Header().Get("Location"))
+	assert.Equal(t, http.StatusOK, rec.Code)
+	assert.Equal(t, "application/json", rec.Header().Get("Content-Type"))
+
+	expectedResponse := `{"status":"success","data":{"id":1,"name":"New Name","nickname":"newnickname","email":"newemail@example.com","city":"New City","about":"New aboutaboutaboutaboutaboutaboutabout","image":"newimage.jpg"}}`
+	assert.JSONEq(t, expectedResponse, rec.Body.String())
+
+	updatedUser, ok := mockStorage.Users["newnickname"]
+	assert.True(t, ok)
+	assert.Equal(t, "New Name", updatedUser.Name)
+	assert.Equal(t, "newnickname", updatedUser.Nickname)
+	assert.Equal(t, "newemail@example.com", updatedUser.Email)
+	assert.Equal(t, "New City", updatedUser.City)
+	assert.Equal(t, "New aboutaboutaboutaboutaboutaboutabout", updatedUser.About)
+	assert.Equal(t, "newimage.jpg", updatedUser.Image)
+
 }

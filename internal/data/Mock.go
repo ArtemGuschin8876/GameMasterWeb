@@ -43,11 +43,27 @@ func (m *MockUserStorage) GetAll() ([]User, error) {
 }
 
 func (m *MockUserStorage) Update(user *User) error {
-	if _, exists := m.Users[user.Nickname]; !exists {
+	var foundUser *User
+	var oldNickname string
+
+	for nickname, storedUser := range m.Users {
+		if storedUser.ID == user.ID {
+			foundUser = storedUser
+			oldNickname = nickname
+			break
+		}
+	}
+
+	if foundUser == nil {
 		return fmt.Errorf("user not found")
 	}
 
+	if oldNickname != user.Nickname {
+		delete(m.Users, oldNickname)
+	}
+
 	m.Users[user.Nickname] = user
+
 	return nil
 }
 
