@@ -68,5 +68,11 @@ func (m *MockUserStorage) Update(user *User) error {
 }
 
 func (m *MockUserStorage) Delete(id int64) error {
-	return nil
+	for nickname, user := range m.Users {
+		if user.ID == id {
+			delete(m.Users, nickname)
+			return nil
+		}
+	}
+	return fmt.Errorf("user not found")
 }
