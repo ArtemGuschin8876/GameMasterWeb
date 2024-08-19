@@ -1,4 +1,4 @@
-package edituserformtests
+package tests
 
 import (
 	"log"

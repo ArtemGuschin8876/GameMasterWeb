@@ -1,4 +1,4 @@
-package deleteuserhandlertests
+package tests
 
 import (
 	"net/http"
@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestDeleteUserJSONResponse(t *testing.T) {
+func TestDeleteUser(t *testing.T) {
 	e := echo.New()
 
 	mockStorage := &data.MockUserStorage{
