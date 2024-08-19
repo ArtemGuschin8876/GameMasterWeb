@@ -17,7 +17,6 @@ type JsonData struct {
 }
 
 func (t TemplateData) ValidationOfFormFields(data TemplateData, err error) {
-
 	if val, ok := err.(validation.Errors); ok {
 		for field, valerr := range val {
 			switch field {

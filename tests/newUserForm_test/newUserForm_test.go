@@ -14,7 +14,6 @@ import (
 )
 
 func TestNewUserForm(t *testing.T) {
-
 	e := echo.New()
 
 	req := httptest.NewRequest(http.MethodGet, "/users/new", nil)
@@ -24,8 +23,10 @@ func TestNewUserForm(t *testing.T) {
 
 	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
 
+	templates, _ := application.ReadTemplatesFromRootPath("../..")
 	app := &application.Application{
-		Logger: logger,
+		Logger:    logger,
+		Templates: templates,
 	}
 
 	appCtx := application.AppContext{

@@ -32,7 +32,7 @@ func main() {
 	defer db.Close()
 	logger.Printf("database connection pool established")
 
-	templateCache, err := application.NewTemplateCache()
+	templateCache, err := application.ReadTemplates()
 	if err != nil {
 		logger.Fatal(err)
 	}
