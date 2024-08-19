@@ -44,14 +44,14 @@ func TestCreateUserHTMLResponse(t *testing.T) {
 
 	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
 
-	templatePath := "./static/ui/html/table.html"
+	templates, _ := application.ReadTemplateFromRootPath("../..")
 
 	app := &application.Application{
 		Storage: data.Storage{
 			User: mockStorage,
 		},
-		Logger:           logger,
-		TemplateTestPath: templatePath,
+		Logger:    logger,
+		Templates: templates,
 	}
 
 	appCtx := application.AppContext{

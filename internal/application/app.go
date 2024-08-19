@@ -2,10 +2,10 @@ package application
 
 import (
 	"errors"
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
+	"path"
 	"path/filepath"
 	"strconv"
 
@@ -25,12 +25,11 @@ type DB struct{ DSN string }
 type Config struct{ Port int }
 
 type Application struct {
-	Logger           *log.Logger
-	Config           Config
-	Storage          data.Storage
-	Templates        map[string]*template.Template
-	Response         Response
-	TemplateTestPath string
+	Logger    *log.Logger
+	Config    Config
+	Storage   data.Storage
+	Templates map[string]*template.Template
+	Response  Response
 }
 
 func (app *Application) ReadIDParam(c echo.Context) (int64, error) {
@@ -114,19 +113,37 @@ func (app *Application) WithAppContext(handler func(AppContext) error) func(echo
 	}
 }
 
-func NewTemplateCache() (map[string]*template.Template, error) {
+// func NewTemplateCache() (map[string]*template.Template, error) {
+// 	cache := map[string]*template.Template{}
+
+// 	pages := []string{
+// 		"./static/ui/html/tableAllUsers.html",
+// 		"./static/ui/html/table.html",
+// 		"./static/ui/html/addUser.html",
+// 		"./static/ui/html/404.html",
+// 		"./static/ui/html/updateUserForms.html",
+// 	}
+
+// 	for _, page := range pages {
+// 		log.Printf("Attempting to open template file: %s", page)
+// 		ts, err := template.ParseFiles(page)
+// 		if err != nil {
+// 			log.Printf("Error loading template %s: %v", page, err)
+// 			return nil, err
+// 		}
+// 		cache[filepath.Base(page)] = ts
+// 	}
+// 	return cache, nil
+// }
+
+func ReadTemplateFromRootPath(projectRootPath string) (map[string]*template.Template, error) {
 	cache := map[string]*template.Template{}
 
-	pages := []string{
-		"./static/ui/html/tableAllUsers.html",
-		"./static/ui/html/table.html",
-		"./static/ui/html/addUser.html",
-		"./static/ui/html/404.html",
-		"./static/ui/html/updateUserForms.html",
-	}
+	pathToTemplates := path.Join(projectRootPath, "static/ui/html/*.html")
+	pages, _ := filepath.Glob(pathToTemplates)
+	log.Printf("found %v templates to load", len(pages))
 
 	for _, page := range pages {
-		log.Printf("Attempting to open template file: %s", page)
 		ts, err := template.ParseFiles(page)
 		if err != nil {
 			log.Printf("Error loading template %s: %v", page, err)
@@ -137,14 +154,6 @@ func NewTemplateCache() (map[string]*template.Template, error) {
 	return cache, nil
 }
 
-func InitTemplateCache() map[string]*template.Template {
-	templates := make(map[string]*template.Template)
-	files, _ := filepath.Glob("./static/ui/html/*.html")
-	for _, file := range files {
-		name := filepath.Base(file)
-		tmpl, _ := template.ParseFiles(file)
-		templates[name] = tmpl
-		fmt.Println("Loaded template:", name)
-	}
-	return templates
+func ReadTemplates() (map[string]*template.Template, error) {
+	return ReadTemplateFromRootPath(".")
 }

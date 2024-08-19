@@ -24,8 +24,11 @@ func TestNewUserForm(t *testing.T) {
 
 	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
 
+	templates, _ := application.ReadTemplateFromRootPath("../..")
+
 	app := &application.Application{
-		Logger: logger,
+		Logger:    logger,
+		Templates: templates,
 	}
 
 	appCtx := application.AppContext{

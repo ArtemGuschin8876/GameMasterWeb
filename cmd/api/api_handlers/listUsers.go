@@ -43,5 +43,4 @@ func ListUsers(c application.AppContext) error {
 	} else {
 		return app.RenderHTML(c, "tableAllUsers", data)
 	}
-
 }
