@@ -13,7 +13,6 @@ import (
 )
 
 func UpdateUser(c application.AppContext) error {
-
 	app := c.App
 
 	id, err := app.ReadIDParam(c)
@@ -30,7 +29,7 @@ func UpdateUser(c application.AppContext) error {
 		default:
 			app.JsendError(c, "the server was unable to process your request")
 		}
-
+		return err
 	}
 
 	var input struct {
@@ -93,7 +92,7 @@ func UpdateUser(c application.AppContext) error {
 	if err := sess.Save(c.Request(), c.Response()); err != nil {
 		return err
 	}
-
+	log.Println("dasd")
 	if c.Request().Header.Get("Accept") == "application/json" {
 		return app.JsendSuccess(c, user)
 	} else {

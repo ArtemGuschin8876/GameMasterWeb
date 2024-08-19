@@ -12,6 +12,7 @@ import (
 	"gamemasterweb.net/cmd/api/api_handlers"
 	"gamemasterweb.net/internal/application"
 	"gamemasterweb.net/internal/data"
+	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
 )
@@ -27,34 +28,39 @@ func TestUpdateUserHTMLRendering(t *testing.T) {
 				Nickname: "oldnickname",
 				Email:    "oldemail@example.com",
 				City:     "Old City",
-				About:    "Old about",
+				About:    "Old adsaadsadssadsadabout",
 				Image:    "",
 			},
 		},
 	}
 
 	formData := url.Values{
-		"name":     {"New Name"},
+		"name":     {"NewName"},
 		"nickname": {"newnickname"},
 		"email":    {"newemail@example.com"},
-		"city":     {"New City"},
-		"about":    {"New about"},
+		"city":     {"NewCity"},
+		"about":    {"New about with enough length"},
 		"image":    {"newimage.jpg"},
 	}
+
 	req := httptest.NewRequest(http.MethodPost, "/users/1", strings.NewReader(formData.Encode()))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationForm)
-	req.Header.Set(echo.HeaderAccept, "text/html")
+	req.Header.Set(echo.HeaderAccept, echo.MIMETextHTML)
+
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
 
+	c.Set("_session_store", sessions.NewCookieStore([]byte("secret")))
+
 	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
 
-	templates, _ := application.ReadTemplateFromRootPath("../..")
+	templates, err := application.ReadTemplateFromRootPath("../..")
+	if err != nil {
+		t.Fatalf("Error loading templates: %v", err)
+	}
 
 	app := &application.Application{
-		Storage: data.Storage{
-			User: mockStorage,
-		},
+		Storage:   data.Storage{User: mockStorage},
 		Logger:    logger,
 		Templates: templates,
 	}
@@ -65,21 +71,26 @@ func TestUpdateUserHTMLRendering(t *testing.T) {
 	}
 
 	c.Set("app", appCtx)
+
 	c.SetParamNames("id")
 	c.SetParamValues("1")
 
-	err := api_handlers.UpdateUser(appCtx)
-	assert.NoError(t, err)
+	err = api_handlers.UpdateUser(appCtx)
+	if err != nil {
+		t.Fatal("Handler error:", err)
+	}
 
 	assert.Equal(t, http.StatusSeeOther, rec.Code)
 	assert.Equal(t, "/users", rec.Header().Get("Location"))
 
 	updatedUser, ok := mockStorage.Users["newnickname"]
-	assert.True(t, ok)
-	assert.Equal(t, "New Name", updatedUser.Name)
+	if !ok {
+		t.Fatal("User should exist in mock storage with new nickname")
+	}
+	assert.Equal(t, "NewName", updatedUser.Name)
 	assert.Equal(t, "newnickname", updatedUser.Nickname)
 	assert.Equal(t, "newemail@example.com", updatedUser.Email)
-	assert.Equal(t, "New City", updatedUser.City)
-	assert.Equal(t, "New about", updatedUser.About)
+	assert.Equal(t, "NewCity", updatedUser.City)
+	assert.Equal(t, "New about with enough length", updatedUser.About)
 	assert.Equal(t, "newimage.jpg", updatedUser.Image)
 }
