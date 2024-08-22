@@ -30,6 +30,9 @@ jobs:
     - name: Build
       run: go build -v ./...
 
+      - name: Check Version Go
+      run: go version
+
     - name: Run gofmt-action
       uses: Jerome1337/gofmt-action@v1.0.5
       with:
