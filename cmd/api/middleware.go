@@ -1,17 +1,19 @@
 package main
 
 import (
-	"log"
 	"net/http"
 
+	"gamemasterweb.net/internal/logger"
 	"github.com/labstack/echo/v4"
 )
 
 func RecoverPanic(next echo.HandlerFunc) echo.HandlerFunc {
+	zeroLog := logger.NewLogger()
+
 	return func(c echo.Context) error {
 		defer func() {
 			if err := recover(); err != nil {
-				log.Printf("Panic occurred: %v", err)
+				zeroLog.Info().Msgf("Panic occurred: %v", err)
 				errResponse := map[string]interface{}{
 					"error": "Internal Server Error",
 				}

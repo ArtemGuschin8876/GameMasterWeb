@@ -3,7 +3,8 @@ package data
 import (
 	"database/sql"
 	"errors"
-	"log"
+
+	"gamemasterweb.net/internal/logger"
 )
 
 type UserModel struct {
@@ -13,12 +14,13 @@ type UserModel struct {
 var (
 	ErrDuplicateNickname = errors.New("nickname already exists")
 	ErrDuplicateEmail    = errors.New("email already exists")
+	zeroLog              = logger.NewLogger()
 )
 
 func (m UserModel) Add(user *User) error {
 	isUniqueEmail, err := m.isEmailUnique(user.Email)
 	if err != nil {
-		log.Println("error verifying a unique email")
+		zeroLog.Err(err).Msg("Error verifying a unique email")
 		return err
 	}
 
@@ -28,7 +30,7 @@ func (m UserModel) Add(user *User) error {
 
 	isUniqueNickName, err := m.isNickNameUnique(user.Nickname)
 	if err != nil {
-		log.Println("error verifying a unique nickname")
+		zeroLog.Err(err).Msg("Error verifying a unique nickname")
 		return err
 	}
 
@@ -53,9 +55,8 @@ func (m UserModel) Add(user *User) error {
 
 	err = m.DB.QueryRow(query, args...).Scan(&user.ID)
 	if err != nil {
-		log.Println("Error executing query:", err)
+		zeroLog.Err(err).Msgf("Error executing query: %s", err)
 	}
-
 	return err
 }
 

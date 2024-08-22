@@ -10,6 +10,7 @@ import (
 	"strconv"
 
 	"gamemasterweb.net/internal/data"
+	"gamemasterweb.net/internal/logger"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 )
@@ -32,31 +33,35 @@ type Application struct {
 	Response  Response
 }
 
+var zeroLog = logger.NewLogger()
+
 func (app *Application) ReadIDParam(c echo.Context) (int64, error) {
 
 	IDParam := c.Param("id")
 	if IDParam == "" {
 		return 0, errors.New("missing id parameter")
 	}
+	zeroLog.Info().Msg("ID successfully received")
 
 	id, err := strconv.ParseInt(IDParam, 10, 64)
 	if err != nil || id < 1 {
-		log.Println(id)
+		zeroLog.Err(err)
 		return 0, errors.New("invalid id parameter")
 	}
+
 	return id, nil
 }
 
 func (app *Application) RenderHTML(c echo.Context, fileName string, s any) error {
 	ts, ok := app.Templates[fileName+".html"]
 	if !ok {
-		app.Logger.Println("template doesn't exist in cache:", fileName)
+		zeroLog.Info().Msgf("template doesn't exist in cache: %s", fileName)
 		return c.String(http.StatusBadRequest, "template doesn't exist in cache")
 	}
 
 	err := ts.Execute(c.Response().Writer, s)
 	if err != nil {
-		app.Logger.Printf("error executing template %s: %v", fileName, err)
+		zeroLog.Err(err).Msgf("error executing template %s: %v", fileName, err)
 		return app.JsendError(c, "error execute template files")
 	}
 
@@ -96,7 +101,7 @@ func (app *Application) JsonError(c echo.Context, data interface{}) error {
 
 func (app *Application) Respond(c echo.Context, status int, jsonResponse interface{}, htmlTmpl string, tmplData data.TemplateData) error {
 	if c.Request().Header.Get("Accept") == "application/json" {
-		return app.JsendSuccess(c, jsonResponse)
+		return nil
 	}
 	return c.Render(status, htmlTmpl, tmplData)
 }
