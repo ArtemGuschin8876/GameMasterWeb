@@ -2,6 +2,7 @@ package data
 
 import (
 	"fmt"
+	"sort"
 	"strconv"
 )
 
@@ -38,6 +39,10 @@ func (m *MockUserStorage) GetAll() ([]User, error) {
 	for _, user := range m.Users {
 		users = append(users, *user)
 	}
+
+	sort.Slice(users, func(i, j int) bool {
+		return users[i].ID < users[j].ID
+	})
 
 	return users, nil
 }
