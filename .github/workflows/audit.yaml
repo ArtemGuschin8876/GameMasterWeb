@@ -30,7 +30,7 @@ jobs:
     - name: Build
       run: go build -v ./...
 
-      - name: Check Version Go
+    - name: Check version Go
       run: go version
 
     - name: Run gofmt-action
