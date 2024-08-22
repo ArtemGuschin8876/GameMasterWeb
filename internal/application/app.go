@@ -113,35 +113,11 @@ func (app *Application) WithAppContext(handler func(AppContext) error) func(echo
 	}
 }
 
-// func NewTemplateCache() (map[string]*template.Template, error) {
-// 	cache := map[string]*template.Template{}
-
-// 	pages := []string{
-// 		"./static/ui/html/tableAllUsers.html",
-// 		"./static/ui/html/table.html",
-// 		"./static/ui/html/addUser.html",
-// 		"./static/ui/html/404.html",
-// 		"./static/ui/html/updateUserForms.html",
-// 	}
-
-// 	for _, page := range pages {
-// 		log.Printf("Attempting to open template file: %s", page)
-// 		ts, err := template.ParseFiles(page)
-// 		if err != nil {
-// 			log.Printf("Error loading template %s: %v", page, err)
-// 			return nil, err
-// 		}
-// 		cache[filepath.Base(page)] = ts
-// 	}
-// 	return cache, nil
-// }
-
 func ReadTemplateFromRootPath(projectRootPath string) (map[string]*template.Template, error) {
 	cache := map[string]*template.Template{}
 
 	pathToTemplates := path.Join(projectRootPath, "static/ui/html/*.html")
 	pages, _ := filepath.Glob(pathToTemplates)
-	log.Printf("found %v templates to load", len(pages))
 
 	for _, page := range pages {
 		ts, err := template.ParseFiles(page)

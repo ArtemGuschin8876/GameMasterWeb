@@ -103,7 +103,7 @@ func TestCreateUser(t *testing.T) {
 
 		logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
 
-		templates, _ := application.ReadTemplateFromRootPath("../..")
+		templates, _ := application.ReadTemplateFromRootPath("..")
 
 		app := &application.Application{
 			Storage: data.Storage{

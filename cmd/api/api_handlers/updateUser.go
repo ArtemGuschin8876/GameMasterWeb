@@ -92,7 +92,6 @@ func UpdateUser(c application.AppContext) error {
 	if err := sess.Save(c.Request(), c.Response()); err != nil {
 		return err
 	}
-	log.Println("dasd")
 	if c.Request().Header.Get("Accept") == "application/json" {
 		return app.JsendSuccess(c, user)
 	} else {

@@ -15,46 +15,35 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestListUser(t *testing.T) {
+func TestShowUser(t *testing.T) {
+
 	e := echo.New()
 
 	t.Run("JSON Response", func(t *testing.T) {
-
-		req := httptest.NewRequest(http.MethodGet, "/users", nil)
+		req := httptest.NewRequest(http.MethodGet, "/users/1", nil)
 		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 		req.Header.Set(echo.HeaderAccept, echo.MIMEApplicationJSON)
 		rec := httptest.NewRecorder()
+
 		c := e.NewContext(req, rec)
 
 		c.Set("_session_store", sessions.NewCookieStore([]byte("secret")))
 
-		mockUsers := []*data.User{
-			{
-				ID:       1,
-				Name:     "User1",
-				Nickname: "user1nick",
-				Email:    "user1@example.com",
-				City:     "City1",
-				About:    "About User1About User1About User1About User1",
-			},
-			{
-				ID:       2,
-				Name:     "User2",
-				Nickname: "user2nick",
-				Email:    "user2@example.com",
-				City:     "City2",
-				About:    "About User2About User2About User2About User2",
-			},
-		}
-
 		mockStorage := &data.MockUserStorage{
-			Users: make(map[string]*data.User),
+			Users: map[string]*data.User{
+				"1": {
+					ID:       1,
+					Name:     "Test User",
+					Nickname: "testuser",
+					Email:    "testuser@example.com",
+					City:     "Test City",
+					About:    "This is a test user.",
+				},
+			},
 		}
 
-		for i, user := range mockUsers {
-			user.ID = int64(i + 1)
-			mockStorage.Users[user.Nickname] = user
-		}
+		c.SetParamNames("id")
+		c.SetParamValues("1")
 
 		app := &application.Application{
 			Storage: data.Storage{
@@ -69,46 +58,31 @@ func TestListUser(t *testing.T) {
 
 		c.Set("app", appCtx)
 
-		err := api_handlers.ListUsers(appCtx)
+		err := api_handlers.ShowUser(appCtx)
 		assert.NoError(t, err)
 
 		assert.Equal(t, http.StatusOK, rec.Code)
-		assert.Equal(t, "application/json", rec.Header().Get("Content-Type"))
 
-		expectedJSON := `{
+		expected := `{
 		"status": "success",
-		"data": [
-		  {
+		"data": {
 			"id": 1,
-			"name": "User1",
-			"nickname": "user1nick",
-			"email": "user1@example.com",
-			"city": "City1",
-			"about": "About User1About User1About User1About User1",
+			"name": "Test User",
+			"nickname": "testuser",
+			"email": "testuser@example.com",
+			"city": "Test City",
+			"about": "This is a test user.",
 			"image": ""
-		  },
-		  {
-			"id": 2,
-			"name": "User2",
-			"nickname": "user2nick",
-			"email": "user2@example.com",
-			"city": "City2",
-			"about": "About User2About User2About User2About User2",
-			"image": ""
-		  }
-		]
-	  }`
-
-		assert.JSONEq(t, expectedJSON, rec.Body.String())
+		}
+	}`
+		assert.JSONEq(t, expected, rec.Body.String())
 	})
 
-	t.Run("HTML Response", func(t *testing.T) {
-		req := httptest.NewRequest(http.MethodGet, "/users", nil)
+	t.Run("HTML Resposne", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/users/2", nil)
 		rec := httptest.NewRecorder()
 
 		c := e.NewContext(req, rec)
-
-		c.Set("_session_store", sessions.NewCookieStore([]byte("secret")))
 
 		mockStorage := &data.MockUserStorage{
 			Users: make(map[string]*data.User),
@@ -133,11 +107,9 @@ func TestListUser(t *testing.T) {
 
 		c.Set("app", appCtx)
 
-		err := api_handlers.ListUsers(appCtx)
+		err := api_handlers.ShowUser(appCtx)
 		assert.NoError(t, err)
 
 		assert.Equal(t, http.StatusOK, rec.Code)
 	})
 }
-
-//надо сделать t.Run html response

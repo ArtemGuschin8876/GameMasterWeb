@@ -1,4 +1,4 @@
-package listusershandlertests
+package tests
 
 import (
 	"log"
@@ -9,34 +9,23 @@ import (
 
 	"gamemasterweb.net/cmd/api/api_handlers"
 	"gamemasterweb.net/internal/application"
-	"gamemasterweb.net/internal/data"
-	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestListUsersHTMLResponse(t *testing.T) {
+func TestNewUserForm(t *testing.T) {
 	e := echo.New()
 
-	req := httptest.NewRequest(http.MethodGet, "/users", nil)
+	req := httptest.NewRequest(http.MethodGet, "/users/new", nil)
 	rec := httptest.NewRecorder()
 
 	c := e.NewContext(req, rec)
 
-	c.Set("_session_store", sessions.NewCookieStore([]byte("secret")))
-
-	mockStorage := &data.MockUserStorage{
-		Users: make(map[string]*data.User),
-	}
-
 	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
 
-	templates, _ := application.ReadTemplateFromRootPath("../..")
+	templates, _ := application.ReadTemplateFromRootPath("..")
 
 	app := &application.Application{
-		Storage: data.Storage{
-			User: mockStorage,
-		},
 		Logger:    logger,
 		Templates: templates,
 	}
@@ -48,8 +37,9 @@ func TestListUsersHTMLResponse(t *testing.T) {
 
 	c.Set("app", appCtx)
 
-	err := api_handlers.ListUsers(appCtx)
+	err := api_handlers.NewUserForm(appCtx)
 	assert.NoError(t, err)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
+
 }
