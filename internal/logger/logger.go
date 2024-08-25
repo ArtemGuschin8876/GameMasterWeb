@@ -12,5 +12,5 @@ func NewLogger() zerolog.Logger {
 		w.TimeFormat = "2006-01-02 03:04:05.000PM"
 	})
 
-	return zerolog.New(consoleWriter).With().Timestamp().Logger()
+	return zerolog.New(consoleWriter).With().Timestamp().Caller().Logger()
 }
