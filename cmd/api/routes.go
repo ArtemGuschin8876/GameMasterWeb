@@ -6,6 +6,7 @@ import (
 
 	"gamemasterweb.net/cmd/api/api_handlers"
 	"gamemasterweb.net/internal/application"
+	"gamemasterweb.net/internal/logger"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
@@ -18,9 +19,24 @@ type pathsSwagger struct {
 }
 
 func routes(app *application.Application) *echo.Echo {
-
+	zeroLog := logger.NewLogger()
 	e := echo.New()
 	e.Use(RecoverPanic)
+
+	e.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
+		LogURI:    true,
+		LogStatus: true,
+		LogMethod: true,
+		LogValuesFunc: func(c echo.Context, v middleware.RequestLoggerValues) error {
+			zeroLog.Info().
+				Str("URI", v.URI).
+				Int("status", v.Status).
+				Str("method", v.Method).
+				Msg("request")
+
+			return nil
+		},
+	}))
 
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"*"},

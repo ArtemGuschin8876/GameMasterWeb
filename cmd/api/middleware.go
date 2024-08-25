@@ -7,8 +7,9 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+var zeroLog = logger.NewLogger()
+
 func RecoverPanic(next echo.HandlerFunc) echo.HandlerFunc {
-	zeroLog := logger.NewLogger()
 
 	return func(c echo.Context) error {
 		defer func() {
