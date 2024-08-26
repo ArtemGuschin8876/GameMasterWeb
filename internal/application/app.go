@@ -69,7 +69,7 @@ func (app *Application) RenderHTML(c echo.Context, fileName string, s any) error
 
 func LoadEnv() error {
 	if err := godotenv.Load(); err != nil {
-		log.Print("No .env file found")
+		log.Println("No .env file found")
 	}
 	return nil
 }

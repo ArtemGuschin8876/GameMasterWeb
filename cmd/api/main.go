@@ -66,10 +66,11 @@ func main() {
 }
 
 func openDB(DB application.DB) (*sql.DB, error) {
-	zeroLog := logger.NewLogger()
 
 	application.LoadEnv()
 	DB.DSN = os.Getenv("DSN_DB")
+
+	zeroLog := logger.NewLogger()
 
 	db, err := sql.Open("postgres", DB.DSN)
 	if err != nil {

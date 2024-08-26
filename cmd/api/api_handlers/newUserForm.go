@@ -1,8 +1,6 @@
 package api_handlers
 
 import (
-	"log"
-
 	"gamemasterweb.net/internal/application"
 )
 
@@ -12,7 +10,7 @@ func NewUserForm(c application.AppContext) error {
 
 	err := app.RenderHTML(c, "addUser", nil)
 	if err != nil {
-		log.Println("error render html in newUserForm")
+		zeroLog.Err(err).Msg("error render html in newUserForm")
 	}
 
 	return nil

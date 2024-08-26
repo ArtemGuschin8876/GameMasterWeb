@@ -86,8 +86,10 @@ func (m UserModel) Get(id int64) (*User, error) {
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
+			zeroLog.Err(err).Msg("error no rows")
 			return nil, ErrRecordNotFound
 		default:
+			zeroLog.Err(err).Msg("error scan queryRow")
 			return nil, err
 		}
 	}
@@ -103,6 +105,7 @@ func (m UserModel) GetAll() ([]User, error) {
 
 	rows, err := m.DB.Query(query)
 	if err != nil {
+		zeroLog.Err(err).Msg("error execute query")
 		return nil, err
 	}
 
@@ -120,6 +123,7 @@ func (m UserModel) GetAll() ([]User, error) {
 			&user.About,
 			&user.Image,
 		); err != nil {
+			zeroLog.Err(err).Msg("error scan rows")
 			return nil, err
 		}
 
@@ -127,6 +131,7 @@ func (m UserModel) GetAll() ([]User, error) {
 	}
 
 	if err := rows.Err(); err != nil {
+		zeroLog.Err(err).Msg("string iteration error")
 		return nil, err
 	}
 
@@ -151,6 +156,7 @@ func (m UserModel) Update(user *User) error {
 	}
 
 	_, err := m.DB.Exec(query, args...)
+	zeroLog.Err(err).Msg("error executing")
 	return err
 }
 
@@ -166,11 +172,13 @@ func (m UserModel) Delete(id int64) error {
 
 	result, err := m.DB.Exec(query, id)
 	if err != nil {
+		zeroLog.Err(err).Msg("error execute")
 		return err
 	}
 
 	rowsAffected, err := result.RowsAffected()
 	if err != nil {
+		zeroLog.Err(err).Msg("error rows affected")
 		return err
 	}
 

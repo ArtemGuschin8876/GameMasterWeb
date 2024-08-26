@@ -12,9 +12,10 @@ import (
 	"github.com/labstack/echo-contrib/session"
 )
 
+var zeroLog = logger.NewLogger()
+
 func CreateUser(c application.AppContext) error {
 	var user data.User
-	zeroLog := logger.NewLogger()
 	app := c.App
 
 	if err := c.Bind(&user); err != nil {

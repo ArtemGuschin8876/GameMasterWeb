@@ -5,12 +5,10 @@ import (
 
 	"gamemasterweb.net/internal/application"
 	"gamemasterweb.net/internal/data"
-	"gamemasterweb.net/internal/logger"
 )
 
 func EditUserForm(c application.AppContext) error {
 
-	zeroLog := logger.NewLogger()
 	app := c.App
 
 	id, err := app.ReadIDParam(c)
@@ -38,7 +36,6 @@ func EditUserForm(c application.AppContext) error {
 
 		default:
 			zeroLog.Err(err).Msg("the server did not process the request")
-
 			return app.JsendError(c, "the server was unable to process your request")
 		}
 	}
