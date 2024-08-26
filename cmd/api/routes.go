@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 	"os"
+	"strings"
 
 	"gamemasterweb.net/cmd/api/api_handlers"
 	"gamemasterweb.net/internal/application"
@@ -37,6 +38,26 @@ func routes(app *application.Application) *echo.Echo {
 			return nil
 		},
 	}))
+
+	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			var responseType string
+
+			err := next(c)
+
+			acceptHeader := c.Request().Header.Get("Accept")
+
+			if strings.Contains(acceptHeader, "application/json") {
+				responseType = "json"
+			} else {
+				responseType = "html"
+			}
+
+			zeroLog.Info().Str("reposnse-type", responseType).Msg("Request processed")
+
+			return err
+		}
+	})
 
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"*"},
