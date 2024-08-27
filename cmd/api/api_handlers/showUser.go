@@ -2,7 +2,6 @@ package api_handlers
 
 import (
 	"errors"
-	"log"
 	"strings"
 
 	"gamemasterweb.net/internal/application"
@@ -20,6 +19,7 @@ func ShowUser(c application.AppContext) error {
 
 	id, err := app.ReadIDParam(c)
 	if err != nil {
+		zeroLog.Err(err).Msg("error reading id")
 		return app.JsendError(c, "Id retrieval error")
 	}
 
@@ -27,8 +27,10 @@ func ShowUser(c application.AppContext) error {
 	if err != nil {
 		switch {
 		case errors.Is(err, data.ErrRecordNotFound):
+			zeroLog.Err(err).Msg("not found")
 			return app.JsendError(c, "the requested resource could not be found")
 		default:
+			zeroLog.Err(err).Msg("incorrect request")
 			return app.JsendError(c, "the server was unable to process your request")
 		}
 	}
@@ -41,7 +43,7 @@ func ShowUser(c application.AppContext) error {
 
 	err = app.RenderHTML(c, "table", user)
 	if err != nil {
-		log.Println("file rendering error")
+		zeroLog.Err(err).Msg("file rendering error")
 		return app.JsendError(c, "file rendering error")
 	}
 	return nil

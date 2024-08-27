@@ -13,6 +13,7 @@ func ListUsers(c application.AppContext) error {
 
 	sess, err := session.Get("session", c)
 	if err != nil {
+		zeroLog.Err(err).Msg("err getting session")
 		return err
 	}
 
@@ -28,6 +29,7 @@ func ListUsers(c application.AppContext) error {
 
 	users, err := app.Storage.User.GetAll()
 	if err != nil {
+		zeroLog.Err(err).Msg("error with GetAll")
 		return app.JsendError(c, "error getting the list of users")
 	}
 

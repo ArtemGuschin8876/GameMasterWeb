@@ -3,7 +3,8 @@ package data
 import (
 	"database/sql"
 	"errors"
-	"log"
+
+	"gamemasterweb.net/internal/logger"
 )
 
 type UserModel struct {
@@ -13,12 +14,13 @@ type UserModel struct {
 var (
 	ErrDuplicateNickname = errors.New("nickname already exists")
 	ErrDuplicateEmail    = errors.New("email already exists")
+	zeroLog              = logger.NewLogger()
 )
 
 func (m UserModel) Add(user *User) error {
 	isUniqueEmail, err := m.isEmailUnique(user.Email)
 	if err != nil {
-		log.Println("error verifying a unique email")
+		zeroLog.Err(err).Msg("Error verifying a unique email")
 		return err
 	}
 
@@ -28,7 +30,7 @@ func (m UserModel) Add(user *User) error {
 
 	isUniqueNickName, err := m.isNickNameUnique(user.Nickname)
 	if err != nil {
-		log.Println("error verifying a unique nickname")
+		zeroLog.Err(err).Msg("Error verifying a unique nickname")
 		return err
 	}
 
@@ -53,9 +55,8 @@ func (m UserModel) Add(user *User) error {
 
 	err = m.DB.QueryRow(query, args...).Scan(&user.ID)
 	if err != nil {
-		log.Println("Error executing query:", err)
+		zeroLog.Err(err).Msgf("Error executing query: %s", err)
 	}
-
 	return err
 }
 
@@ -85,8 +86,10 @@ func (m UserModel) Get(id int64) (*User, error) {
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
+			zeroLog.Err(err).Msg("error no rows")
 			return nil, ErrRecordNotFound
 		default:
+			zeroLog.Err(err).Msg("error scan queryRow")
 			return nil, err
 		}
 	}
@@ -102,6 +105,7 @@ func (m UserModel) GetAll() ([]User, error) {
 
 	rows, err := m.DB.Query(query)
 	if err != nil {
+		zeroLog.Err(err).Msg("error execute query")
 		return nil, err
 	}
 
@@ -119,6 +123,7 @@ func (m UserModel) GetAll() ([]User, error) {
 			&user.About,
 			&user.Image,
 		); err != nil {
+			zeroLog.Err(err).Msg("error scan rows")
 			return nil, err
 		}
 
@@ -126,6 +131,7 @@ func (m UserModel) GetAll() ([]User, error) {
 	}
 
 	if err := rows.Err(); err != nil {
+		zeroLog.Err(err).Msg("string iteration error")
 		return nil, err
 	}
 
@@ -150,6 +156,7 @@ func (m UserModel) Update(user *User) error {
 	}
 
 	_, err := m.DB.Exec(query, args...)
+	zeroLog.Err(err).Msg("error executing")
 	return err
 }
 
@@ -165,11 +172,13 @@ func (m UserModel) Delete(id int64) error {
 
 	result, err := m.DB.Exec(query, id)
 	if err != nil {
+		zeroLog.Err(err).Msg("error execute")
 		return err
 	}
 
 	rowsAffected, err := result.RowsAffected()
 	if err != nil {
+		zeroLog.Err(err).Msg("error rows affected")
 		return err
 	}
 

@@ -17,6 +17,7 @@ func UpdateUser(c application.AppContext) error {
 
 	id, err := app.ReadIDParam(c)
 	if err != nil {
+		zeroLog.Err(err).Msg("error reading IDParam")
 		app.JsendError(c, "the requested resource could not be found")
 	}
 
@@ -42,6 +43,7 @@ func UpdateUser(c application.AppContext) error {
 	}
 
 	if err := c.Bind(&input); err != nil {
+		zeroLog.Err(err).Msg("error binding")
 		return app.JsendError(c, "database error")
 	}
 
@@ -57,6 +59,7 @@ func UpdateUser(c application.AppContext) error {
 	}
 
 	if err := user.ValidateUser(); err != nil {
+		zeroLog.Err(err).Msg("error validation user")
 		tmplData := data.TemplateData{
 			FormErrors: make(map[string]string),
 			User:       user,
@@ -79,17 +82,19 @@ func UpdateUser(c application.AppContext) error {
 
 	err = app.Storage.User.Update(user)
 	if err != nil {
+		zeroLog.Err(err).Msg("error updating user on database")
 		return app.JsendError(c, "error updating user")
 	}
 
 	sess, err := session.Get("session", c)
 	if err != nil {
-		log.Println("session creation error")
+		zeroLog.Err(err).Msg("session creation error")
 		panic("session creation error")
 	}
 
 	sess.Values["flash"] = user.Nickname + " successfully updated!"
 	if err := sess.Save(c.Request(), c.Response()); err != nil {
+		zeroLog.Err(err).Msg("session saving error")
 		return err
 	}
 	if c.Request().Header.Get("Accept") == "application/json" {

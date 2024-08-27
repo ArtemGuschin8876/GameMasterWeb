@@ -3,9 +3,11 @@ package main
 import (
 	"net/http"
 	"os"
+	"strings"
 
 	"gamemasterweb.net/cmd/api/api_handlers"
 	"gamemasterweb.net/internal/application"
+	"gamemasterweb.net/internal/logger"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
@@ -18,9 +20,44 @@ type pathsSwagger struct {
 }
 
 func routes(app *application.Application) *echo.Echo {
-
+	zeroLog := logger.NewLogger()
 	e := echo.New()
 	e.Use(RecoverPanic)
+
+	e.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
+		LogURI:    true,
+		LogStatus: true,
+		LogMethod: true,
+		LogValuesFunc: func(c echo.Context, v middleware.RequestLoggerValues) error {
+			zeroLog.Info().
+				Str("URI", v.URI).
+				Int("status", v.Status).
+				Str("method", v.Method).
+				Msg("request")
+
+			return nil
+		},
+	}))
+
+	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			var responseType string
+
+			err := next(c)
+
+			acceptHeader := c.Request().Header.Get("Accept")
+
+			if strings.Contains(acceptHeader, "application/json") {
+				responseType = "json"
+			} else {
+				responseType = "html"
+			}
+
+			zeroLog.Info().Str("reposnse-type", responseType).Msg("Request processed")
+
+			return err
+		}
+	})
 
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"*"},

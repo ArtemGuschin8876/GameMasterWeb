@@ -2,23 +2,24 @@ package api_handlers
 
 import (
 	"errors"
-	"log"
 	"net/http"
 	"strings"
 
 	"gamemasterweb.net/internal/application"
 	"gamemasterweb.net/internal/data"
+	"gamemasterweb.net/internal/logger"
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/labstack/echo-contrib/session"
 )
 
+var zeroLog = logger.NewLogger()
+
 func CreateUser(c application.AppContext) error {
 	var user data.User
-
 	app := c.App
 
 	if err := c.Bind(&user); err != nil {
-		log.Println(err)
+		zeroLog.Err(err).Msg("Problem with bind")
 		return app.Respond(c, http.StatusBadRequest, app.JsendError(c, "invalid request payload"), "addUser", data.TemplateData{
 			FormErrors: map[string]string{"error": "invalid request payload"},
 			User:       &user,
@@ -30,6 +31,7 @@ func CreateUser(c application.AppContext) error {
 	}
 
 	if err := user.ValidateUser(); err != nil {
+		zeroLog.Err(err).Msg("Problem with validation func")
 		tmplData := data.TemplateData{
 			FormErrors: make(map[string]string),
 			User:       &user,
@@ -52,6 +54,7 @@ func CreateUser(c application.AppContext) error {
 
 	err := app.Storage.User.Add(&user)
 	if err != nil {
+		zeroLog.Err(err).Msg("Error adding a user to the database")
 		if errors.Is(err, data.ErrDuplicateEmail) {
 			tmplData := data.TemplateData{
 				FormErrors: map[string]string{"email": "Пользователь с таким email уже существует"},
@@ -73,7 +76,7 @@ func CreateUser(c application.AppContext) error {
 
 	sess, err := session.Get("session", c)
 	if err != nil {
-		log.Println("session creation error")
+		zeroLog.Err(err).Msg("Error receiving session")
 		return app.Respond(c, http.StatusInternalServerError, app.JsendError(c, "internal server error"), "addUser", data.TemplateData{
 			FormErrors: map[string]string{"error": "internal server error"},
 			User:       &user,
@@ -82,7 +85,7 @@ func CreateUser(c application.AppContext) error {
 
 	sess.Values["flash"] = "User " + user.Nickname + " successfully created!"
 	if err := sess.Save(c.Request(), c.Response()); err != nil {
-		log.Println("session save error")
+		zeroLog.Err(err).Msg("Error saving session")
 		return app.Respond(c, http.StatusInternalServerError, app.JsendError(c, "internal server error"), "addUser", data.TemplateData{
 			FormErrors: map[string]string{"error": "internal server error"},
 			User:       &user,

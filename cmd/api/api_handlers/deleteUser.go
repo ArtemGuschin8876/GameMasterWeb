@@ -15,6 +15,7 @@ func DeleteUser(c application.AppContext) error {
 
 	id, err := app.ReadIDParam(c)
 	if err != nil {
+		zeroLog.Err(err).Msg("error reading IDParam")
 		return app.JsendError(c, "Id retrieval error")
 	}
 
@@ -22,8 +23,10 @@ func DeleteUser(c application.AppContext) error {
 	if err != nil {
 		switch {
 		case errors.Is(err, data.ErrRecordNotFound):
+			zeroLog.Err(err).Msg("not found")
 			return app.JsendError(c, "the requested resource could not be found")
 		default:
+			zeroLog.Err(err).Msg("incorrect request")
 			return app.JsendError(c, "the server was unable to process your request")
 		}
 	}

@@ -12,12 +12,15 @@ import (
 
 	"gamemasterweb.net/internal/application"
 	"gamemasterweb.net/internal/data"
+	"gamemasterweb.net/internal/logger"
 	_ "github.com/lib/pq"
 )
 
 func main() {
 	var cfg application.Config
 	var DB application.DB
+
+	zeroLog := logger.NewLogger()
 
 	flag.IntVar(&cfg.Port, "port", 4000, "API Server PORT")
 	flag.Parse()
@@ -26,15 +29,15 @@ func main() {
 
 	db, err := openDB(DB)
 	if err != nil {
-		logger.Fatal(err)
+		zeroLog.Fatal().Msg("Database connection is not established ")
 	}
-
 	defer db.Close()
-	logger.Printf("database connection pool established")
+
+	zeroLog.Info().Msg("Database connection pool established")
 
 	templateCache, err := application.ReadTemplates()
 	if err != nil {
-		logger.Fatal(err)
+		zeroLog.Err(err).Msg("Template reading error")
 	}
 
 	app := application.Application{
@@ -53,11 +56,11 @@ func main() {
 		WriteTimeout: 30 * time.Second,
 	}
 
-	logger.Printf("starting server on %s", srv.Addr)
+	zeroLog.Info().Msgf("Starting server on %s", srv.Addr)
 
 	err = srv.ListenAndServe()
 	if err != nil {
-		log.Fatal(err)
+		zeroLog.Fatal().Msg("Error in server startup")
 	}
 
 }
@@ -67,8 +70,11 @@ func openDB(DB application.DB) (*sql.DB, error) {
 	application.LoadEnv()
 	DB.DSN = os.Getenv("DSN_DB")
 
+	zeroLog := logger.NewLogger()
+
 	db, err := sql.Open("postgres", DB.DSN)
 	if err != nil {
+		zeroLog.Err(err).Msg("Unknown driver db")
 		return nil, err
 	}
 
@@ -77,6 +83,7 @@ func openDB(DB application.DB) (*sql.DB, error) {
 
 	err = db.PingContext(ctx)
 	if err != nil {
+		zeroLog.Err(err).Msg("Problem with PingContext")
 		return nil, err
 	}
 
