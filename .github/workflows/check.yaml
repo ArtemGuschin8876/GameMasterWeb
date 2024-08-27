@@ -1,4 +1,4 @@
-name: audit
+name: check
 
 on:
   push:
@@ -19,10 +19,10 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
-        go-version: 1.22.2  
+        go-version: 1.23.0
 
     - name: Install dependencies
-      run: go mod tidy
+      run: go mod tidy -diff
 
     - name: Verify dependencies
       run: go mod verify
@@ -39,6 +39,4 @@ jobs:
       run: go vet ./...
 
     - name: Run tests
-      run: go test ./... -v
-
-
+      run: go test ./... -v -race
