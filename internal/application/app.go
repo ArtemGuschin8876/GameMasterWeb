@@ -3,14 +3,15 @@ package application
 import (
 	"errors"
 	"html/template"
+	"io/fs"
 	"log"
 	"net/http"
-	"path"
 	"path/filepath"
 	"strconv"
 
 	"gamemasterweb.net/internal/data"
 	"gamemasterweb.net/internal/logger"
+	"gamemasterweb.net/static"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 )
@@ -68,7 +69,7 @@ func (app *Application) RenderHTML(c echo.Context, fileName string, s any) error
 }
 
 func LoadEnv() error {
-	if err := godotenv.Load("/golang/app/.env"); err != nil {
+	if err := godotenv.Load(".env"); err != nil {
 		log.Println("No .env file found")
 	}
 	return nil
@@ -120,11 +121,15 @@ func (app *Application) WithAppContext(handler func(AppContext) error) func(echo
 func ReadTemplateFromRootPath(projectRootPath string) (map[string]*template.Template, error) {
 	cache := map[string]*template.Template{}
 
-	pathToTemplates := path.Join(projectRootPath, "static/ui/html/*.html")
-	pages, _ := filepath.Glob(pathToTemplates)
+	// pathToTemplates := path.Join(projectRootPath, "static/ui/html/*.html")
+	// pages, _ := filepath.Glob(pathToTemplates)
+
+	pages, _ := fs.Glob(static.FS, "ui/html/*.html")
+	log.Printf("pages: %v", pages)
 
 	for _, page := range pages {
-		ts, err := template.ParseFiles(page)
+		// ts, err := template.ParseFiles(page)
+		ts, err := template.ParseFS(static.FS, page)
 		if err != nil {
 			log.Printf("Error loading template %s: %v", page, err)
 			return nil, err
