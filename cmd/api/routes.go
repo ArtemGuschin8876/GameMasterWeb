@@ -8,6 +8,7 @@ import (
 	"gamemasterweb.net/cmd/api/api_handlers"
 	"gamemasterweb.net/internal/application"
 	"gamemasterweb.net/internal/logger"
+	rice "github.com/GeertJohan/go.rice"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
@@ -23,6 +24,8 @@ func routes(app *application.Application) *echo.Echo {
 	zeroLog := logger.NewLogger()
 	e := echo.New()
 	e.Use(RecoverPanic)
+
+	assertHandler := http.FileServer(rice.MustFindBox("../../static/ui/html").HTTPBox())
 
 	e.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
 		LogURI:    true,
@@ -89,6 +92,8 @@ func routes(app *application.Application) *echo.Echo {
 	e.GET("/", func(c echo.Context) error {
 		return c.Redirect(http.StatusSeeOther, "/users")
 	})
+
+	e.GET("/static/*", echo.WrapHandler(http.StripPrefix("/static/", assertHandler)))
 
 	e.GET("/users", app.WithAppContext(api_handlers.ListUsers))
 	e.GET("/users/:id", app.WithAppContext(api_handlers.ShowUser))
