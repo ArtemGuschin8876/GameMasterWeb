@@ -56,7 +56,7 @@ func routes(app *application.Application) *echo.Echo {
 				responseType = "html"
 			}
 
-			zeroLog.Info().Str("reposnse-type", responseType).Msg("Request processed")
+			zeroLog.Info().Str("response-type", responseType).Msg("Request processed")
 
 			return err
 		}

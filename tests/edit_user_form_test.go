@@ -73,6 +73,7 @@ func TestEditUserForm(t *testing.T) {
 		assert.Equal(t, http.StatusOK, rec.Code)
 		assert.Contains(t, rec.Body.String(), "the requested resource could not be found")
 	})
+
 	t.Run("ID doesn't exist HTML Response", func(t *testing.T) {
 		req := httptest.NewRequest(http.MethodGet, "/users/edit/5", nil)
 		rec := httptest.NewRecorder()

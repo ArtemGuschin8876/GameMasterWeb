@@ -8,7 +8,6 @@ import (
 )
 
 func EditUserForm(c application.AppContext) error {
-
 	app := c.App
 
 	id, err := app.ReadIDParam(c)
@@ -26,8 +25,6 @@ func EditUserForm(c application.AppContext) error {
 				FormErrors: make(map[string]string),
 			}
 
-			zeroLog.Err(err).Msg("request not found")
-
 			if c.Request().Header.Get("Accept") == "application/json" {
 				return app.JsendError(c, "user id not found")
 			} else {
@@ -40,5 +37,14 @@ func EditUserForm(c application.AppContext) error {
 		}
 	}
 
-	return nil
+	tmplData := data.TemplateData{
+		User:       user,
+		FormErrors: make(map[string]string),
+	}
+
+	if c.Request().Header.Get("Accept") == "application/json" {
+		return app.JsendSuccess(c, tmplData)
+	} else {
+		return app.RenderHTML(c, "updateUserForms", tmplData)
+	}
 }

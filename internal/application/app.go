@@ -121,14 +121,10 @@ func (app *Application) WithAppContext(handler func(AppContext) error) func(echo
 func ReadTemplateFromRootPath(projectRootPath string) (map[string]*template.Template, error) {
 	cache := map[string]*template.Template{}
 
-	// pathToTemplates := path.Join(projectRootPath, "static/ui/html/*.html")
-	// pages, _ := filepath.Glob(pathToTemplates)
-
 	pages, _ := fs.Glob(static.FS, "ui/html/*.html")
 	log.Printf("pages: %v", pages)
 
 	for _, page := range pages {
-		// ts, err := template.ParseFiles(page)
 		ts, err := template.ParseFS(static.FS, page)
 		if err != nil {
 			log.Printf("Error loading template %s: %v", page, err)

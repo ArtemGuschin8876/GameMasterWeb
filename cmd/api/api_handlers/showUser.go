@@ -20,7 +20,11 @@ func ShowUser(c application.AppContext) error {
 	id, err := app.ReadIDParam(c)
 	if err != nil {
 		zeroLog.Err(err).Msg("error reading id")
-		return app.JsendError(c, "Id retrieval error")
+		if c.Request().Header.Get("Accept") == "application/json" {
+			return app.JsendError(c, "Id retrieval error")
+		} else {
+			return app.RenderHTML(c, "404", nil)
+		}
 	}
 
 	user, err := app.Storage.User.Get(id)
@@ -28,7 +32,13 @@ func ShowUser(c application.AppContext) error {
 		switch {
 		case errors.Is(err, data.ErrRecordNotFound):
 			zeroLog.Err(err).Msg("not found")
-			return app.JsendError(c, "the requested resource could not be found")
+
+			if c.Request().Header.Get("Accept") == "application/json" {
+				return app.JsendError(c, "the requested resource could not be found")
+			} else {
+				return app.RenderHTML(c, "404", nil)
+			}
+
 		default:
 			zeroLog.Err(err).Msg("incorrect request")
 			return app.JsendError(c, "the server was unable to process your request")

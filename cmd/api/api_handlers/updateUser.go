@@ -18,6 +18,8 @@ func UpdateUser(c application.AppContext) error {
 	id, err := app.ReadIDParam(c)
 	if err != nil {
 		zeroLog.Err(err).Msg("error reading IDParam")
+		log.Println("1")
+		app.RenderHTML(c, "404", nil)
 		app.JsendError(c, "the requested resource could not be found")
 	}
 
